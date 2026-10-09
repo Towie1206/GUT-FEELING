@@ -33,6 +33,17 @@ public class PlayerMovement : MonoBehaviour
         moveInput = Vector2.ClampMagnitude(input, 1f);
     }
 
+    public void UpdateMovementSpeed(bool isSprinting, bool isCrouching)
+    {
+        if (isCrouching)
+            currentSpeed = crouchSpeed;
+        else if (isSprinting)
+            currentSpeed = sprintSpeed;
+        else
+            currentSpeed = moveSpeed;
+    }
+
+
     private void FixedUpdate()
     {
         HandleMovement();

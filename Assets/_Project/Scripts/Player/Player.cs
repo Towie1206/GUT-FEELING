@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
     public Vector2 moveInput { get; private set; }
     public Vector2 mousePosition { get; private set; }
 
+    public PlayerInteraction interaction { get; private set; }
+    public PlayerHand hand { get; private set; }
+
 
     private void Awake()
     {
@@ -22,6 +25,8 @@ public class Player : MonoBehaviour
         stateMachine.Initialize(freeState);
         movement = GetComponent<PlayerMovement>();
         look = GetComponent<PlayerLook>();
+        interaction = GetComponent<PlayerInteraction>();
+        hand = GetComponent<PlayerHand>();
     }
     private void OnEnable()
     {
@@ -41,4 +46,5 @@ public class Player : MonoBehaviour
     {
         stateMachine.currentState.Update();
     }
+
 }
