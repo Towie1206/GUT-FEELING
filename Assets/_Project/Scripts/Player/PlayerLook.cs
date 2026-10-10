@@ -53,5 +53,7 @@ public class PlayerLook : MonoBehaviour
 
         float targetFOV = isZooming ? zoomFOV : defaultFOV;
         playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
-    }    
+    }
+    
+    public Transform CameraTransform => camPivot;
 }

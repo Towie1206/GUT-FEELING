@@ -66,7 +66,17 @@ public class FlashlightItem : MonoBehaviour, IInteractable, IHoldable
         col.enabled = true;
         swayComponent.enabled = false;
 
-        rb.AddForce(throwDirection * 7.5f, ForceMode.Impulse);
+        // Reset vận tốc cũ để không bị quán tính cũ giật
+        rb.linearVelocity = Vector3.zero;
+
+        // Đẩy nhẹ đèn ra phía trước mặt một chút (0.2m) để không cấn vào Collider của Player
+        transform.position += throwDirection * 0.2f;
+
+        // Tác dụng lực ném theo đúng hướng mắt nhìn
+        rb.AddForce(throwDirection * 10f, ForceMode.Impulse);
+
+        // Tạo độ xoay lộn vòng ngẫu nhiên trên không trung cho chân thực
+        rb.AddTorque(Random.insideUnitSphere * 2f, ForceMode.Impulse);
     }
 
     public void OnSway(float lookDelta)

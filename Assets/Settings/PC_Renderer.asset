@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed596c511089e354399a6ea16635f4d8, type: 3}
   m_Name: VHSRendererFeature
   m_EditorClassIdentifier: Assembly-CSharp::VHSRendererFeature
-  m_Active: 1
+  m_Active: 0
   settings:
     material: {fileID: 2100000, guid: 755f7a2b5162a1644a43bc1364294cc4, type: 2}
     renderPassEvent: 600

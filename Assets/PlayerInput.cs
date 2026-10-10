@@ -184,9 +184,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Zoom"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""9c91d1a8-f155-41f9-a2a2-5eb3d9ab5f4b"",
-                    ""expectedControlType"": ""Digital"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true,

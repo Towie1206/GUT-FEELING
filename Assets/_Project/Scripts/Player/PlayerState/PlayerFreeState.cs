@@ -38,7 +38,7 @@ public class PlayerFreeState : PlayerState
 
         if (input.Player.Throw.WasPressedThisFrame())
         {
-            player.hand.DropCurrentItem(player.look.transform.forward);
+            player.hand.DropCurrentItem(player.look.CameraTransform.forward);
         }
 
         player.hand.UpdateSway(input.Player.Look.ReadValue<Vector2>().x);
