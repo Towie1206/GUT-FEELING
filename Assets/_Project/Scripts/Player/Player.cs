@@ -5,9 +5,11 @@ public class Player : MonoBehaviour
     public PlayerInput input { get; private set; }
     public StateMachine stateMachine { get; private set; }
     public PlayerFreeState freeState { get; private set; }
+    public PlayerInspectState inspectState { get; private set; }
 
     public PlayerMovement movement { get; private set; }
     public PlayerLook look { get; private set; }
+    public PlayerInspect inspect { get; private set; }
 
     public Vector2 moveInput { get; private set; }
     public Vector2 mousePosition { get; private set; }
@@ -21,12 +23,14 @@ public class Player : MonoBehaviour
         input = new PlayerInput();
         stateMachine = new StateMachine();
         freeState = new PlayerFreeState(this, stateMachine);
+        inspectState = new PlayerInspectState(this, stateMachine);
 
         stateMachine.Initialize(freeState);
         movement = GetComponent<PlayerMovement>();
         look = GetComponent<PlayerLook>();
         interaction = GetComponent<PlayerInteraction>();
         hand = GetComponent<PlayerHand>();
+        inspect = GetComponent<PlayerInspect>();
     }
     private void OnEnable()
     {
