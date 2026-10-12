@@ -80,7 +80,7 @@
                     "name": "Next",
                     "type": "Button",
                     "id": "b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false,
@@ -130,6 +130,16 @@
                     "name": "InspectRotate",
                     "type": "Button",
                     "id": "24de19cd-04c6-40c2-9430-5e0a318697bf",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "AltUse",
+                    "type": "Button",
+                    "id": "4598b540-e1e8-4410-a55a-0fadfe77e885",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -564,6 +574,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "InspectRotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ba51f350-2dcc-4dba-81f5-efbb3c86953b",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "AltUse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

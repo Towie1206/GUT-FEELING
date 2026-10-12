@@ -37,4 +37,13 @@ public class PlayerHand : MonoBehaviour
 
         CurrentItemHold.OnSway(lookDelta);
     }
+
+    public void AltUseCurrentItem()
+    {
+        if (!HasItem) return;
+        if (CurrentItemHold is IAltUsable altUsable)
+        {
+            altUsable.OnAltUse();
+        }
+    }
 }

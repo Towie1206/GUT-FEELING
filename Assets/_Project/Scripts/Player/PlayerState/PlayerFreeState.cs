@@ -41,6 +41,11 @@ public class PlayerFreeState : PlayerState
             player.hand.DropCurrentItem(player.look.CameraTransform.forward);
         }
 
+        if (input.Player.AltUse.WasPressedThisFrame())
+        {
+            player.hand.AltUseCurrentItem();
+        }
+
         player.hand.UpdateSway(input.Player.Look.ReadValue<Vector2>().x);
     }
     public override void Exit()

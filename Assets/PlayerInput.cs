@@ -166,7 +166,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""name"": ""Next"",
                     ""type"": ""Button"",
                     ""id"": ""b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false,
@@ -216,6 +216,16 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""name"": ""InspectRotate"",
                     ""type"": ""Button"",
                     ""id"": ""24de19cd-04c6-40c2-9430-5e0a318697bf"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""AltUse"",
+                    ""type"": ""Button"",
+                    ""id"": ""4598b540-e1e8-4410-a55a-0fadfe77e885"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -650,6 +660,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""InspectRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba51f350-2dcc-4dba-81f5-efbb3c86953b"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""AltUse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1260,6 +1281,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_Toggle = m_Player.FindAction("Toggle", throwIfNotFound: true);
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
         m_Player_InspectRotate = m_Player.FindAction("InspectRotate", throwIfNotFound: true);
+        m_Player_AltUse = m_Player.FindAction("AltUse", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1366,6 +1388,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Toggle;
     private readonly InputAction m_Player_Throw;
     private readonly InputAction m_Player_InspectRotate;
+    private readonly InputAction m_Player_AltUse;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1429,6 +1452,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/InspectRotate".
         /// </summary>
         public InputAction @InspectRotate => m_Wrapper.m_Player_InspectRotate;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/AltUse".
+        /// </summary>
+        public InputAction @AltUse => m_Wrapper.m_Player_AltUse;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1494,6 +1521,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @InspectRotate.started += instance.OnInspectRotate;
             @InspectRotate.performed += instance.OnInspectRotate;
             @InspectRotate.canceled += instance.OnInspectRotate;
+            @AltUse.started += instance.OnAltUse;
+            @AltUse.performed += instance.OnAltUse;
+            @AltUse.canceled += instance.OnAltUse;
         }
 
         /// <summary>
@@ -1544,6 +1574,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @InspectRotate.started -= instance.OnInspectRotate;
             @InspectRotate.performed -= instance.OnInspectRotate;
             @InspectRotate.canceled -= instance.OnInspectRotate;
+            @AltUse.started -= instance.OnAltUse;
+            @AltUse.performed -= instance.OnAltUse;
+            @AltUse.canceled -= instance.OnAltUse;
         }
 
         /// <summary>
@@ -1935,6 +1968,13 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInspectRotate(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AltUse" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAltUse(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
