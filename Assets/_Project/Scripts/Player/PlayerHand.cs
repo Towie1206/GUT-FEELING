@@ -8,6 +8,7 @@ public class PlayerHand : MonoBehaviour
     public IHoldable CurrentItemHold { get; private set; }
     public bool HasItem => CurrentItemHold != null;
 
+
     public void Equip(IHoldable item)
     {
         if (CurrentItemHold != null)
@@ -20,7 +21,7 @@ public class PlayerHand : MonoBehaviour
 
     public void UseCurrentItem()
     {
-        if(!HasItem) return;
+        if (!HasItem) return;
 
         CurrentItemHold.OnUse();
     }
@@ -46,4 +47,5 @@ public class PlayerHand : MonoBehaviour
             altUsable.OnAltUse();
         }
     }
+
 }

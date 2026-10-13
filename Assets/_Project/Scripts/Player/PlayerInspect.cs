@@ -38,8 +38,6 @@ public class PlayerInspect : MonoBehaviour
 
     public void StopInspect()
     {
-        currentItemInspect.OnEndInspect();
-
         if (moveCo != null)
             StopCoroutine(moveCo);
         moveCo = StartCoroutine(ReturnItem());

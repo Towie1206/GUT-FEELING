@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IAltUsable
+public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHoldInteractable
 {
     [SerializeField] private Transform triggerLever;
     [SerializeField] private GameObject safetyPin;
@@ -16,6 +16,7 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IAl
 
     [SerializeField] private GameObject hoseStowed;
     [SerializeField] private GameObject hoseAimed;
+    [SerializeField] private Vector3 pinPullOffset = new Vector3(0.05f, 0f, 0f);
 
     // Trạng thái nội bộ
     private Rigidbody rb;
@@ -26,11 +27,19 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IAl
     private Quaternion originalLeverRotation;
     private Quaternion pressedLeverRotation;
 
+    private Vector3 initialPinLocalPos;
+
+
     [SerializeField] private Vector3 holdRotationOffset = new Vector3(0f, 90f, 0f);
 
     public bool IsHeld => isHeld;
     public bool IsPinPulled => isPinPulled;
     public string InteractionPrompt => isHeld ? string.Empty : pickupPrompt;
+
+    public bool CanHold => isHeld && !isPinPulled;
+
+    public float HoldDuration => 1.5f; // Giữ 1.5 giây để rút chốt
+    public string ActionPrompt => "Đang rút chốt an toàn...";
 
     private void Awake()
     {
@@ -46,6 +55,8 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IAl
 
         if (hoseStowed != null) hoseStowed.SetActive(true);
         if (hoseAimed != null) hoseAimed.SetActive(false);
+
+        initialPinLocalPos = safetyPin.transform.localPosition;
     }
 
     private void Update()
@@ -144,10 +155,22 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IAl
         isSpraying = !isSpraying;
     }
 
-    public void OnAltUse()
+    public void OnHoldStart()
     {
-        if (!isPinPulled)
-            PullSafetyPin();
-    }    
+        if (isPinPulled) return;
+        if(pullPinAudioSource != null) pullPinAudioSource.Play();
+    }
 
+    public void OnHoldProgress(float normalizedProgress)
+    {
+        safetyPin.transform.localPosition = Vector3.Lerp(initialPinLocalPos, initialPinLocalPos + pinPullOffset, normalizedProgress);
+    }
+    public void OnHoldComplete(Player player)
+    {
+        PullSafetyPin();
+    }
+    public void OnHoldCancel()
+    {
+        safetyPin.transform.localPosition = initialPinLocalPos;
+    }
 }
