@@ -14,6 +14,9 @@ public class PlayerInteraction : MonoBehaviour
     public event Action<float> OnHoldProgressChanged;
     public event Action OnHoldEnded;
 
+    public event Action<string> OnInteractableFound;
+    public event Action OnInteractableLost;
+
     private IInteractable currentInteractable;
     private IHoldInteractable currentHoldInteractable;
     private Collider lastHitCollider;
@@ -60,15 +63,20 @@ public class PlayerInteraction : MonoBehaviour
                 if (!isHolding || isWorldHold)
                     currentHoldInteractable = holdInteractable;
 
+                string prompt = currentInteractable.InteractionPrompt;
+                OnInteractableFound?.Invoke(prompt);
+
                 activeCrosshair.SetActive(true);
             }
             else
             {
+                OnInteractableLost.Invoke();
                 ClearInteraction();
             }
         }
         else
         {
+            OnInteractableLost.Invoke();
             ClearInteraction();
         }
     }
