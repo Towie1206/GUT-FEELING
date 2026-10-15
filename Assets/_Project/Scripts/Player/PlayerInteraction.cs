@@ -63,20 +63,19 @@ public class PlayerInteraction : MonoBehaviour
                 if (!isHolding || isWorldHold)
                     currentHoldInteractable = holdInteractable;
 
-                string prompt = currentInteractable.InteractionPrompt;
-                OnInteractableFound?.Invoke(prompt);
+                string prompt = currentInteractable != null ? currentInteractable.InteractionPrompt : (currentHoldInteractable != null ? currentHoldInteractable.ActionPrompt : string.Empty);
+                if (!string.IsNullOrEmpty(prompt))
+                    OnInteractableFound?.Invoke(prompt);
 
                 activeCrosshair.SetActive(true);
             }
             else
             {
-                OnInteractableLost.Invoke();
                 ClearInteraction();
             }
         }
         else
         {
-            OnInteractableLost.Invoke();
             ClearInteraction();
         }
     }
@@ -92,6 +91,7 @@ public class PlayerInteraction : MonoBehaviour
             currentHoldInteractable = null;
 
         lastHitCollider = null;
+        OnInteractableLost?.Invoke();
         activeCrosshair.SetActive(false);
     }
 

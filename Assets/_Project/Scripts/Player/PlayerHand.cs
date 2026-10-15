@@ -48,4 +48,12 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
+    public IHoldable ReleaseCurrentItem()
+    {
+        if (!HasItem) return null;
+        IHoldable item = CurrentItemHold;
+        CurrentItemHold = null;
+        return item;
+    }    
+
 }

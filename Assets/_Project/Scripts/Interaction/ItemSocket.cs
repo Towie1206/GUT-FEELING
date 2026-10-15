@@ -17,11 +17,19 @@ public class ItemSocket : MonoBehaviour, IInteractable
 
     public void Interact(Player player)
     {
-        if (!player.hand.HasItem) return;
+        IPlaceable placeableItem = player.hand.CurrentItemHold as IPlaceable;
+        if (placeableItem == null) return;
 
-        if (HasItem) return; //socket đã có đồ rồi thì không cho đặt thêm
+        // Kiểm tra có đúng mã đồ Socket cần không:
+        if (!string.IsNullOrEmpty(requiredItemTag) && placeableItem.PlaceableID != requiredItemTag)
+            return;
 
-
-    }    
+        // Bàn tay nhả đồ ra, thì Socket HỨNG LẤY NGAY LẬP TỨC!
+        currentItem = player.hand.ReleaseCurrentItem(); // <-- currentItem nhận đồ ở đây!
+                                                        
+        placeableItem.OnPlace(attachPoint); // Báo cho món đồ tự bay vào attachPoint:
+        if (placeAudio != null) placeAudio.Play();
+        OnItemPlaced?.Invoke();
+    }
 
 }
