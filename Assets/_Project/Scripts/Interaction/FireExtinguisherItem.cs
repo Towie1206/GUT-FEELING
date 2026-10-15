@@ -17,6 +17,8 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHo
     [SerializeField] private GameObject hoseStowed;
     [SerializeField] private GameObject hoseAimed;
     [SerializeField] private Vector3 pinPullOffset = new Vector3(0.05f, 0f, 0f);
+    [SerializeField] private Vector3 heldScale = new Vector3(0.15f, 0.15f, 0.15f);
+    [SerializeField] private Vector3 heldPos;
 
     // Trạng thái nội bộ
     private Rigidbody rb;
@@ -28,6 +30,7 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHo
     private Quaternion pressedLeverRotation;
 
     private Vector3 initialPinLocalPos;
+    private Vector3 originalScale;
 
 
     [SerializeField] private Vector3 holdRotationOffset = new Vector3(0f, 90f, 0f);
@@ -57,6 +60,8 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHo
         if (hoseAimed != null) hoseAimed.SetActive(false);
 
         initialPinLocalPos = safetyPin.transform.localPosition;
+
+        originalScale = transform.localScale;
     }
 
     private void Update()
@@ -79,12 +84,14 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHo
         this.enabled = true;
 
         transform.SetParent(heldPoint);
-        transform.localPosition = Vector3.zero;
+        transform.localPosition = heldPos;
         transform.localRotation = Quaternion.Euler(holdRotationOffset);
 
         rb.isKinematic = true;
         rb.useGravity = false;
         col.enabled = false;
+
+        transform.localScale = heldScale;
 
         if (hoseStowed != null) hoseStowed.SetActive(false);
         if (hoseAimed != null) hoseAimed.SetActive(true);
@@ -125,6 +132,8 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHo
         isSpraying = false;
         if (co2SprayParticle != null) co2SprayParticle.Stop();
         if (sprayAudioSource != null) sprayAudioSource.Stop();
+
+        transform.localScale = originalScale;
 
         rb.isKinematic = false;
         rb.useGravity = true;

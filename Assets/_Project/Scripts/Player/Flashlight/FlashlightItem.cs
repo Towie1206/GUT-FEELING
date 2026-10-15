@@ -8,12 +8,16 @@ public class FlashlightItem : MonoBehaviour, IInteractable, IHoldable
     [SerializeField] private AudioSource clickSound;
     [SerializeField] private FlashlightSway swayComponent;
 
+    [Header("Hold Scale")]
+    [SerializeField] private Vector3 heldScale = new Vector3(0.15f, 0.15f, 0.15f);
+
     [Header("Interaction Text")]
     [SerializeField] private string promptText = "Nhấn [E] để nhặt Đèn pin";
 
     private Rigidbody rb;
     private Collider col;
     private bool isHeld = false;
+    private Vector3 originalScale;
 
     public string InteractionPrompt => isHeld ? string.Empty : promptText;
     public bool IsHeld => isHeld;
@@ -25,6 +29,7 @@ public class FlashlightItem : MonoBehaviour, IInteractable, IHoldable
 
         if (spotLight != null) spotLight.SetActive(false);
         if (swayComponent != null) swayComponent.enabled = false;
+        originalScale = transform.localScale;
     }
 
     public void Interact(Player player)
@@ -46,6 +51,7 @@ public class FlashlightItem : MonoBehaviour, IInteractable, IHoldable
         rb.useGravity = false;
         col.enabled = false;
         swayComponent.enabled = true;
+        transform.localScale = heldScale;
     }
 
     public void OnUse()
@@ -61,6 +67,7 @@ public class FlashlightItem : MonoBehaviour, IInteractable, IHoldable
         isHeld = false;
 
         transform.SetParent(null);
+        transform.localScale = originalScale;
         rb.isKinematic = false;
         rb.useGravity = true;
         col.enabled = true;

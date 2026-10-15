@@ -8,7 +8,6 @@ public class PlayerHand : MonoBehaviour
     public IHoldable CurrentItemHold { get; private set; }
     public bool HasItem => CurrentItemHold != null;
 
-
     public void Equip(IHoldable item)
     {
         if (CurrentItemHold != null)

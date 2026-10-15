@@ -6049,7 +6049,7 @@ GameObject:
   - component: {fileID: 252040267}
   - component: {fileID: 252040266}
   - component: {fileID: 252040265}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6827,7 +6827,7 @@ GameObject:
   - component: {fileID: 275569570}
   - component: {fileID: 275569569}
   - component: {fileID: 275569568}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8347,7 +8347,7 @@ GameObject:
   - component: {fileID: 468378077}
   - component: {fileID: 468378076}
   - component: {fileID: 468378075}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9341,7 +9341,7 @@ GameObject:
   - component: {fileID: 475485166}
   - component: {fileID: 475485165}
   - component: {fileID: 475485164}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10143,6 +10143,7 @@ Transform:
   m_Children:
   - {fileID: 1727197368}
   - {fileID: 658182017}
+  - {fileID: 1134958572}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &756571630
@@ -10323,7 +10324,7 @@ GameObject:
   - component: {fileID: 791150176}
   - component: {fileID: 791150175}
   - component: {fileID: 791150174}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11031,7 +11032,7 @@ GameObject:
   - component: {fileID: 936670595}
   - component: {fileID: 936670594}
   - component: {fileID: 936670593}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11596,7 +11597,7 @@ GameObject:
   - component: {fileID: 966154033}
   - component: {fileID: 966154032}
   - component: {fileID: 966154031}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Left (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11952,7 +11953,7 @@ GameObject:
   - component: {fileID: 1012400488}
   - component: {fileID: 1012400487}
   - component: {fileID: 1012400486}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Left (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12452,7 +12453,7 @@ GameObject:
   - component: {fileID: 1045675670}
   - component: {fileID: 1045675669}
   - component: {fileID: 1045675668}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13294,7 +13295,9 @@ MonoBehaviour:
   pickupPrompt: "Nh\u1EA5n [E] \u0111\u1EC3 nh\u1EB7t B\xECnh c\u1EE9u h\u1ECFa"
   hoseStowed: {fileID: 1344670353}
   hoseAimed: {fileID: 1584945932}
-  pinPullOffset: {x: 0, y: 0, z: 0.05}
+  pinPullOffset: {x: 0.1, y: 0, z: 0}
+  heldScale: {x: 0.15, y: 0.15, z: 0.15}
+  heldPos: {x: 0, y: 0.05, z: 0}
   holdRotationOffset: {x: -90, y: 0, z: -90}
 --- !u!54 &1097944623
 Rigidbody:
@@ -13337,7 +13340,7 @@ GameObject:
   - component: {fileID: 1100354745}
   - component: {fileID: 1100354744}
   - component: {fileID: 1100354743}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Back (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13693,7 +13696,7 @@ GameObject:
   - component: {fileID: 1104712310}
   - component: {fileID: 1104712309}
   - component: {fileID: 1104712308}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Left (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14077,12 +14080,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134958570}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.427, y: 0.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 756571629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1142364876 stripped
 GameObject:
@@ -15065,7 +15068,7 @@ GameObject:
   - component: {fileID: 1429712652}
   - component: {fileID: 1429712651}
   - component: {fileID: 1429712650}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Left (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15623,7 +15626,7 @@ GameObject:
   - component: {fileID: 1556354543}
   - component: {fileID: 1556354542}
   - component: {fileID: 1556354541}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16702,7 +16705,7 @@ GameObject:
   - component: {fileID: 1674295591}
   - component: {fileID: 1674295590}
   - component: {fileID: 1674295589}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17594,7 +17597,7 @@ GameObject:
   - component: {fileID: 1779551512}
   - component: {fileID: 1779551511}
   - component: {fileID: 1779551510}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18250,7 +18253,7 @@ Transform:
   m_GameObject: {fileID: 1888380049}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.5, y: -0.26, z: 0.6}
+  m_LocalPosition: {x: -0.15, y: -0.075, z: 0.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18270,7 +18273,7 @@ GameObject:
   - component: {fileID: 1937586274}
   - component: {fileID: 1937586273}
   - component: {fileID: 1937586272}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18998,7 +19001,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2047787909}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: '[Apartment_Greybox]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19725,6 +19728,7 @@ MonoBehaviour:
   spotLight: {fileID: 2022298505}
   clickSound: {fileID: 0}
   swayComponent: {fileID: 2251903673396008787}
+  heldScale: {x: 0.15, y: 0.15, z: 0.15}
   promptText: "Nh\u1EA5n [E] \u0111\u1EC3 nh\u1EB7t \u0110\xE8n pin"
 --- !u!114 &2251903673396008787
 MonoBehaviour:
@@ -20922,7 +20926,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 410087041}
-  - {fileID: 1134958572}
   - {fileID: 756571629}
   - {fileID: 2047787909}
   - {fileID: 1444405168758771189}
