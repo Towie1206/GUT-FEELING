@@ -65,6 +65,10 @@ public class PlayerFreeState : PlayerState
         {
             player.interaction.CancelHold();
         }
+        if(input.Player.Phone.WasPerformedThisFrame())
+        {
+            stateMachine.ChangeState(player.phoneState);
+        }    
 
         player.hand.UpdateSway(player.mousePosition.x);
     }

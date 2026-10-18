@@ -231,6 +231,16 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Phone"",
+                    ""type"": ""Button"",
+                    ""id"": ""a9fc0ce0-dfa2-4e18-a7e4-642b9bb61b7b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -671,6 +681,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""AltUse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8bc3a20c-13cf-48e2-80ff-79062ab57af4"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Phone"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1282,6 +1303,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
         m_Player_InspectRotate = m_Player.FindAction("InspectRotate", throwIfNotFound: true);
         m_Player_AltUse = m_Player.FindAction("AltUse", throwIfNotFound: true);
+        m_Player_Phone = m_Player.FindAction("Phone", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1389,6 +1411,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Throw;
     private readonly InputAction m_Player_InspectRotate;
     private readonly InputAction m_Player_AltUse;
+    private readonly InputAction m_Player_Phone;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1457,6 +1480,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @AltUse => m_Wrapper.m_Player_AltUse;
         /// <summary>
+        /// Provides access to the underlying input action "Player/Phone".
+        /// </summary>
+        public InputAction @Phone => m_Wrapper.m_Player_Phone;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1524,6 +1551,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @AltUse.started += instance.OnAltUse;
             @AltUse.performed += instance.OnAltUse;
             @AltUse.canceled += instance.OnAltUse;
+            @Phone.started += instance.OnPhone;
+            @Phone.performed += instance.OnPhone;
+            @Phone.canceled += instance.OnPhone;
         }
 
         /// <summary>
@@ -1577,6 +1607,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @AltUse.started -= instance.OnAltUse;
             @AltUse.performed -= instance.OnAltUse;
             @AltUse.canceled -= instance.OnAltUse;
+            @Phone.started -= instance.OnPhone;
+            @Phone.performed -= instance.OnPhone;
+            @Phone.canceled -= instance.OnPhone;
         }
 
         /// <summary>
@@ -1975,6 +2008,13 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAltUse(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Phone" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPhone(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

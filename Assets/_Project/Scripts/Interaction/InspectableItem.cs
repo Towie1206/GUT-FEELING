@@ -7,7 +7,7 @@ public class InspectableItem : MonoBehaviour, IInteractable, IInspectable
     [SerializeField] private Vector3 defaultInspectRotation = new Vector3(0f, 0f, 0f);
 
     [Tooltip("Dòng chữ hiển thị khi ngắm vào vật thể")]
-    [SerializeField] private string promptText = "Soi vật thể [E]";
+    [SerializeField] private string promptText = "[E] Inspect";
 
     private Collider itemCollider;
     private void Awake()

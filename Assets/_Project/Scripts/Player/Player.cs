@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     public StateMachine stateMachine { get; private set; }
     public PlayerFreeState freeState { get; private set; }
     public PlayerInspectState inspectState { get; private set; }
+    public PlayerPhoneState phoneState { get; private set; }
 
     public PlayerMovement movement { get; private set; }
     public PlayerLook look { get; private set; }
@@ -18,12 +19,18 @@ public class Player : MonoBehaviour
     public PlayerHand hand { get; private set; }
 
 
+    public event System.Action<bool> OnPhoneToggled;
+    public void SetPhoneActive(bool isOpen) => OnPhoneToggled?.Invoke(isOpen);
+    public void ClosePhone() => stateMachine.ChangeState(freeState);
+
+
     private void Awake()
     {
         input = new PlayerInput();
         stateMachine = new StateMachine();
         freeState = new PlayerFreeState(this, stateMachine);
         inspectState = new PlayerInspectState(this, stateMachine);
+        phoneState = new PlayerPhoneState(this, stateMachine);
 
         stateMachine.Initialize(freeState);
         movement = GetComponent<PlayerMovement>();

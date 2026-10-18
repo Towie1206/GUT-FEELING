@@ -13,7 +13,7 @@ public class ItemSocket : MonoBehaviour, IInteractable
     private IHoldable currentItem;
     public bool HasItem => currentItem != null;
 
-    public string InteractionPrompt => HasItem ? string.Empty : "Đặt vật phẩm";
+    public string InteractionPrompt => HasItem ? string.Empty : "[E] Place Item";
 
     public void Interact(Player player)
     {

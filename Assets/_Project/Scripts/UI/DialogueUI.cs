@@ -12,12 +12,14 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private float typeSpeed = 0.04f;
 
     [Header("Audio Settings")]
-
     [SerializeField] private AudioSource typingAudioSource;
 
     [SerializeField] private bool randomizePitch = true;
     [SerializeField] private float minPitch = 0.9f;
     [SerializeField] private float maxPitch = 1.1f;
+
+    [Header("Data")]
+    [SerializeField] private DialogueData data;
 
     private Coroutine typingCoroutine;
     public bool IsDisplaying { get; private set; }
@@ -26,11 +28,19 @@ public class DialogueUI : MonoBehaviour
     {
         if (dialogueBox != null) dialogueBox.SetActive(false);
     }
+    [ContextMenu("Test Dialogue")]
+    private void TestDialogue() => ShowDialogue(data);
 
     public void ShowMessage(string message)
     {
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeTextRoutine(message));
+    }
+    public void ShowDialogue(DialogueData data)
+    {
+        if (data == null || data.LineCount == 0) return;
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        typingCoroutine = StartCoroutine(PlayDialogueDataRoutine(data));
     }
 
     private IEnumerator TypeTextRoutine(string fullMessage)
@@ -56,6 +66,20 @@ public class DialogueUI : MonoBehaviour
         // Chờ 3 giây cho người chơi đọc xong rồi tắt
         yield return new WaitForSeconds(3f);
 
+        dialogueBox.SetActive(false);
+        IsDisplaying = false;
+    }
+
+    private IEnumerator PlayDialogueDataRoutine(DialogueData data)
+    {
+        IsDisplaying = true;
+        dialogueBox.SetActive(true);
+        for (int i = 0; i < data.LineCount; i++)
+        {
+            string line = data.GetLine(i);
+
+            yield return TypeTextRoutine(line);
+        }
         dialogueBox.SetActive(false);
         IsDisplaying = false;
     }

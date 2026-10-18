@@ -12,7 +12,7 @@ public class FlashlightItem : MonoBehaviour, IInteractable, IHoldable
     [SerializeField] private Vector3 heldScale = new Vector3(0.15f, 0.15f, 0.15f);
 
     [Header("Interaction Text")]
-    [SerializeField] private string promptText = "Nhấn [E] để nhặt Đèn pin";
+    [SerializeField] private string promptText = "[E] Take Flashlight";
 
     private Rigidbody rb;
     private Collider col;

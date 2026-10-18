@@ -12,7 +12,7 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHo
 
     [SerializeField] private float leverPressAngle = 12f;
     [SerializeField] private float throwForce = 7f;
-    [SerializeField] private string pickupPrompt = "Nhấn [E] để nhặt Bình cứu hỏa";
+    [SerializeField] private string pickupPrompt = "[E] Take Fire Extinguisher";
 
     [SerializeField] private GameObject hoseStowed;
     [SerializeField] private GameObject hoseAimed;
@@ -42,7 +42,7 @@ public class FireExtinguisherItem : MonoBehaviour, IInteractable, IHoldable, IHo
     public bool CanHold => isHeld && !isPinPulled;
 
     public float HoldDuration => 1.5f; // Giữ 1.5 giây để rút chốt
-    public string ActionPrompt => "Đang rút chốt an toàn...";
+    public string ActionPrompt => "Pulling safety pin...";
 
     private void Awake()
     {
