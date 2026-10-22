@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -19,7 +20,7 @@ public class Player : MonoBehaviour
     public PlayerHand hand { get; private set; }
 
 
-    public event System.Action<bool> OnPhoneToggled;
+    public event Action<bool> OnPhoneToggled;
     public void SetPhoneActive(bool isOpen) => OnPhoneToggled?.Invoke(isOpen);
     public void ClosePhone() => stateMachine.ChangeState(freeState);
 

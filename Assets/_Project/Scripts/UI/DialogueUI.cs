@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DialogueUI : MonoBehaviour
 {
+    [SerializeField] private StoryEventBus storyEventBus;
+
     [Header("UI References")]
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private TextMeshProUGUI dialogueText;
@@ -23,6 +25,16 @@ public class DialogueUI : MonoBehaviour
 
     private Coroutine typingCoroutine;
     public bool IsDisplaying { get; private set; }
+
+    private void OnEnable()
+    {
+        storyEventBus.OnDialogueRequested += ShowDialogue;
+    }
+
+    private void OnDisable()
+    {
+        storyEventBus.OnDialogueRequested -= ShowDialogue;
+    }
 
     private void Awake()
     {
