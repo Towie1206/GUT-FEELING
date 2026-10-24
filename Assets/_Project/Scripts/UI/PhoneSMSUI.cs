@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -26,6 +27,10 @@ public class PhoneSMSUI : MonoBehaviour
     [SerializeField] private AudioSource sendSound;
     [SerializeField] private AudioSource notificationSound;
 
+    [Header("Phone Menu (Màn hình danh bạ)")]
+    [SerializeField] private GameObject phoneMenuPanel;
+    [SerializeField] private TextMeshProUGUI chatHeaderNameText;
+
     [Header("Data")]
     [SerializeField] private SMSData data;
     [SerializeField] private Player player;
@@ -38,6 +43,9 @@ public class PhoneSMSUI : MonoBehaviour
 
     private Vector2 onScreenPos = new Vector2(-48f, 0f);
     private Vector2 offScreenPos = new Vector2(-48f, -750f);
+
+    private readonly Dictionary<SMSSender, List<GameObject>> chatHistory = new Dictionary<SMSSender, List<GameObject>>();
+    private SMSSender? currentOpenContact = null;
 
     private void Awake()
     {
@@ -97,9 +105,6 @@ public class PhoneSMSUI : MonoBehaviour
         if (blurVolume != null) blurVolume.weight = targetWeight;
     }
 
-   
-
-
     [ContextMenu("Test SMS")]
     private void TestSMS() => StartConversation(data);
 
@@ -119,13 +124,13 @@ public class PhoneSMSUI : MonoBehaviour
             if (message.sender == SMSSender.Nam)
             {
                 // NHÁNH 1: LƯỢT CỦA PLAYER (NAM) 
-                // Đợi đến khi người chơi bấm Tab mở điện thoại mới bắt đầu gõ
-                yield return new WaitUntil(() => isPhoneOpen);
+                // Đợi máy mở VÀ đang mở đúng hộp thư của người này mới tự gõ trả lời!
+                yield return new WaitUntil(() => isPhoneOpen && currentOpenContact == owner);
                 yield return new WaitForSeconds(message.delay);
                 // Phòng hờ đang gõ mà người chơi lại bấm Tab cất máy, thì đợi mở lại mới gửi
-                yield return new WaitUntil(() => isPhoneOpen);
+                yield return new WaitUntil(() => isPhoneOpen && currentOpenContact == owner);
 
-                SpawnBubble(rowNamPrefab, message.GetText);
+                SpawnBubble(rowNamPrefab, message.GetText,data.ContactOwner);
                 if (sendSound != null)
                     sendSound.Play();
                 ScrollToBottom();
@@ -135,13 +140,13 @@ public class PhoneSMSUI : MonoBehaviour
                 // NHÁNH 2: LƯỢT CỦA NPC (NEM, 113, CHỦ NHÀ) 
                 yield return new WaitForSeconds(message.delay);
 
-                SpawnBubble(rowNemPrefab, message.GetText);
+                SpawnBubble(rowNemPrefab, message.GetText, data.ContactOwner);
                 if (notificationSound != null)
                     notificationSound.Play();
                 ScrollToBottom();
 
                 // Nếu lúc NPC gửi tới mà người chơi ĐANG CẤT MÁY (!isPhoneOpen):
-                if (!isPhoneOpen)
+                if (!isPhoneOpen || currentOpenContact != owner)
                 {
                     unreadCount++;
                     notificationBanner.Show(message.sender.ToString(), unreadCount);
@@ -150,7 +155,7 @@ public class PhoneSMSUI : MonoBehaviour
         }
     }
 
-    private void SpawnBubble(GameObject prefab, string message)
+    private void SpawnBubble(GameObject prefab, string message, SMSSender contact)
     {
         GameObject newBubble = Instantiate(prefab, contentTransform);
         TextMeshProUGUI textComponent = newBubble.GetComponentInChildren<TextMeshProUGUI>();
@@ -160,11 +165,45 @@ public class PhoneSMSUI : MonoBehaviour
             LayoutElement layout = newBubble.GetComponentInChildren<LayoutElement>();
             layout.preferredWidth = 220f;
         }
+
+        if (!chatHistory.ContainsKey(contact))
+        {
+            chatHistory[contact] = new List<GameObject>();
+        }
+        chatHistory[contact].Add(newBubble); //add value
+        newBubble.SetActive(currentOpenContact == contact); //Nếu người chơi đang mở đúng hộp thư của người này thì mới hiện, đang xem người khác thì ẩn đi
+
     }
 
     private void ScrollToBottom()
     {
         Canvas.ForceUpdateCanvases();
         chatScrollRect.verticalNormalizedPosition = 0f;
+    }
+
+    public void OpenPhoneMenu()
+    {
+        currentOpenContact = null;
+        phoneMenuPanel.SetActive(true);
+    }
+    public void OpenNemChat() => OpenChatWith(SMSSender.Nem);
+    public void OpenKiEnChat() => OpenChatWith(SMSSender.KiEn);
+    private void OpenChatWith(SMSSender contact)
+    {
+        currentOpenContact = contact;
+        phoneMenuPanel.SetActive(false);
+
+        if (chatHeaderNameText.text != contact.ToString())
+            chatHeaderNameText.text = contact.ToString();
+
+        foreach (var pair in chatHistory)
+        {
+            bool isSelectedContact = pair.Key == contact;
+            foreach (GameObject bubble in pair.Value)
+            {
+                bubble.SetActive(isSelectedContact);
+            }
+        }
+        ScrollToBottom();
     }
 }

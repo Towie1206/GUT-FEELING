@@ -27,6 +27,9 @@ public struct SMSMessage
 [CreateAssetMenu(fileName = "SMS_Conversation")]
 public class SMSData : ScriptableObject
 {
+    [SerializeField] private SMSSender contactOwner = SMSSender.Nem;
+    public SMSSender ContactOwner => contactOwner;
+
     [SerializeField] private List<SMSMessage> messages = new List<SMSMessage>();
     public List<SMSMessage> Messages => messages;
 }
