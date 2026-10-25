@@ -28,5 +28,14 @@ public enum StoryFlag
     // Endings
     BadEndingReached,
     NormalEndingReached,
-    TrueEndingReached
+    TrueEndingReached,
+
+    // Cờ mở rộng chi tiết cho Hồi 2 & Hồi 3 (Khai báo nối tiếp ở cuối để KHÔNG làm lệch Index đã cấu hình trong Inspector)
+    HalfEatenNoodleSeen,
+    CreepyTVBroadcastSeen,
+    RoomEscapeMinigameCompleted,
+    BathroomSafeRevealed,
+    BathroomSafeOpened,
+    PhoneUnlocked,
+    LastTenantMessageRead
 }

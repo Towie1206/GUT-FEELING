@@ -7759,7 +7759,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab88b2e67d0cf334c9f2ddbc2cb811d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThunderEffect
-  audioSource: {fileID: 0}
+  impulseSource: {fileID: 0}
+  thunderAudioSource: {fileID: 0}
+  rainAudioSource: {fileID: 0}
+  rainDuckedVolume: 0.15
+  duckLeadTime: 0.3
+  lightningLight: {fileID: 0}
+  maxIntensity: 12
+  flashDuration: 0.4
 --- !u!1 &346302928
 GameObject:
   m_ObjectHideFlags: 0

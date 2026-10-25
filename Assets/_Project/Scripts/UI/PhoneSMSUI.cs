@@ -125,10 +125,10 @@ public class PhoneSMSUI : MonoBehaviour
             {
                 // NHÁNH 1: LƯỢT CỦA PLAYER (NAM) 
                 // Đợi máy mở VÀ đang mở đúng hộp thư của người này mới tự gõ trả lời!
-                yield return new WaitUntil(() => isPhoneOpen && currentOpenContact == owner);
+                yield return new WaitUntil(() => isPhoneOpen && currentOpenContact == data.ContactOwner);
                 yield return new WaitForSeconds(message.delay);
                 // Phòng hờ đang gõ mà người chơi lại bấm Tab cất máy, thì đợi mở lại mới gửi
-                yield return new WaitUntil(() => isPhoneOpen && currentOpenContact == owner);
+                yield return new WaitUntil(() => isPhoneOpen && currentOpenContact  == data.ContactOwner);
 
                 SpawnBubble(rowNamPrefab, message.GetText,data.ContactOwner);
                 if (sendSound != null)
@@ -146,7 +146,7 @@ public class PhoneSMSUI : MonoBehaviour
                 ScrollToBottom();
 
                 // Nếu lúc NPC gửi tới mà người chơi ĐANG CẤT MÁY (!isPhoneOpen):
-                if (!isPhoneOpen || currentOpenContact != owner)
+                if (!isPhoneOpen || currentOpenContact != data.ContactOwner)
                 {
                     unreadCount++;
                     notificationBanner.Show(message.sender.ToString(), unreadCount);
