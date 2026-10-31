@@ -32,20 +32,19 @@ public class CookingPotItem : HoldableItemBase
     {
         get
         {
-            if (!IsUnlocked)
-                return "[E] Use";
-            if (IsBoiled)
-                return "[E] Holding a pot of boiling water";
-            if (HasWater)
-                return "[E] Holding a pot of water (unboiled)";
-            return isHeld ? string.Empty : $"[E] Pick up {itemName}";
+            if (isHeld) return string.Empty;
+            if (!IsUnlocked) return "[E] Use";
+            if (IsBoiled) return "[E] Pick up boil pot (Cooked)";
+            if (HasWater) return "[E] Pick up boil pot";
+            return $"[E] Nhặt {itemName}";
         }
     }
 
     public void FillWater()
     {
         HasWater = true;
-        waterInsideMesh.SetActive(true);
+        if (waterInsideMesh != null)
+            waterInsideMesh.SetActive(true);
         if (waterSloshAudio != null)
             waterSloshAudio.Play();
     }

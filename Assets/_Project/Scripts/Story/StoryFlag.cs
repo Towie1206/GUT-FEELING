@@ -2,9 +2,10 @@ public enum StoryFlag
 {
     // Hồi 1: Đời thường & Điềm báo
     GameStarted,
-    LuggageOpened,
+    SuitcaseOpened,
     KeyPlacedOnTable,
     WaterBoiling,
+    KettleFoundBroken,
     NoodleCooked,
     TVNewsWatched,
     NemCallFinished,
