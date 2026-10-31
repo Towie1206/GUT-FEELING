@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class LuggageInteractable : MonoBehaviour, IHoldInteractable
+public class SuitcaseInteractable : MonoBehaviour, IHoldInteractable
 {
     [Header("Luggage Settings")]
     [SerializeField] private float openDuration = 2.0f;
@@ -41,16 +41,21 @@ public class LuggageInteractable : MonoBehaviour, IHoldInteractable
 
     public void OnHoldComplete(Player player)
     {
-
         if (isOpened == true)
             return;
 
         isOpened = true;
         StartCoroutine(OpenLidRoutine());
-        foreach (var item in itemsInside)
-            item.SetActive(true);
+        if (itemsInside != null)
+        {
+            foreach (var item in itemsInside)
+            {
+                if (item != null)
+                    item.SetActive(true);
+            }
+        }
 
-        StoryEventBus.Instance.SetFlag(StoryFlag.LuggageOpened, true);
+        StoryEventBus.Instance.SetFlag(StoryFlag.SuitcaseOpened, true);
         StoryEventBus.Instance.RequestDialogue(afterOpenDialogue);
     }
 
