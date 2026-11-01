@@ -58,4 +58,25 @@ public class CookingPotItem : HoldableItemBase
         if (boilWaterAudio != null)
             boilWaterAudio.Play();
     }
+
+    public void DetachForPouring()
+    {
+        isHeld = false;
+        transform.SetParent(null);
+        transform.localScale = originalScale;
+        rb.isKinematic = true;
+        rb.useGravity = false;
+        col.enabled = false;
+    }
+
+    public void EmptyWater()
+    {
+        HasWater = false;
+        IsBoiled = false;
+        waterInsideMesh.SetActive(false);
+        if (steamParticles != null)
+            steamParticles.Stop();
+        if (boilWaterAudio != null)
+            boilWaterAudio.Stop();
+    }
 }
