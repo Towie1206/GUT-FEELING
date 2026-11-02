@@ -92,32 +92,35 @@ Khi học hỏi từ các tutorial YouTube (kể cả những tutorial rất tr�
 [Vào Căn Hộ: GameStarted]
        │
        ├──► 1. Giữ [E] mở khóa Vali (LuggageInteractable) 
-       │         └──► Bật cờ: StoryFlag.LuggageOpened (Lộ ra Chìa khóa, Bát mì, Gói cà phê)
+       │         └──► Bật cờ: StoryFlag.LuggageOpened (Lộ ra Chìa khóa, Cốc mì, Gói cà phê)
        │
        ├──► 2. Nhặt Chìa khóa đặt lên đĩa ở bàn (ItemSocket: "RoomKey")
        │         └──► Bật cờ: StoryFlag.KeyPlacedOnTable
        │
-       ├──► 3. Bấm [E] bật Tivi xem dự báo bão (TVController + VideoPlayer CRT)
-       │         └──► Bật cờ: StoryFlag.TVNewsWatched + Độc thoại của Nam
-       │
-       ├──► 4. Chuỗi pha đồ nóng & nấu mì tôm đêm mưa:
+       ├──► 3. Chuỗi pha đồ nóng & chế mì tôm ở Bếp:
        │         ├── Bấm [E] vào Ấm siêu tốc cũ (BrokenKettleInteractable) -> Tạch tạch chập đế điện
        │         │     └──► Độc thoại Nam: "Ấm siêu tốc cháy đế rồi... Phải lấy chiếc nồi nhỏ đun trên bếp từ Arasapha thôi."
        │         ├── Nhặt Chiếc Nồi Inox (CookingPotItem) -> Bấm [E] vào Bồn rửa (WaterSink) hứng nước
        │         ├── Đặt Nồi lên Bếp từ Arasapha (ItemSocket: "CookingPot") -> Bấm [E] bật bếp đun sôi
        │         │     └──► Màn LED 2000W sáng, mâm nhiệt đỏ rực, nước sôi ùng ục -> Bật cờ: StoryFlag.WaterBoiling
-       │         ├── Cầm Cốc Cà Phê (CoffeeCupItem) -> Bấm Chuột Phải / [E] nhấp ngụm sưởi ấm (BatPan Video 4)
-       │         │     └──► Mực nước vơi dần -> Đặt cốc lên bàn làm việc
-       │         └── Cầm Nồi nước sôi chế vào Cốc mì Handy Hảo Hảo (NoodleBowlController) -> Nắp bóc hé, mì nở chín
-       │               └──► Ăn 2 miếng chừa lại nửa bát! -> Bật cờ: StoryFlag.NoodleCooked + Nhận SMS cảnh báo của Nem
+       │         └── Cầm Nồi nước sôi chế vào Cốc mì Handy Hảo Hảo (NoodleBowlController) -> Nồi tự hạ về mặt bàn, mì nở chín
        │
-       └──► 5. Ra kéo cửa kính Ban công (BalconyCutsceneTrigger):
-                 ├── Yêu cầu đủ cờ: NoodleCooked && TVNewsWatched
-                 ├── Chuyển Player sang PlayerCutsceneState (Khóa di chuyển)
-                 ├── Chạy Timeline: Blend Cinemachine xuống sân mưa -> Thấy kẻ mặc áo mưa nhìn lên
-                 ├── Signal nổ ThunderEffect (Audio Ducking tắt tiếng mưa 0.3s -> Chớp đèn kép + Sấm giáng + Rung lắc)
-                 ├── Kẻ mặc áo mưa biến mất tức thì vào frame chớp sáng -> Blend trả lại góc nhìn FPS
-                 └──► Bật cờ: StoryFlag.SeenStrangerInRain (Khép lại Hồi 1, chuẩn bị cúp cầu dao Hồi 2!)
+       └──► 4. CHUỖI 4 NHỊP CAO TRÀO HỒI 1 (Sofa -> Tivi CRT -> Ăn mì bị cắt ngang -> Ban công -> Cúp điện):
+                 ├── [Step 1 - Sofa & Tivi CRT kiểu BatPan Video 5]:
+                 │     └── Cầm cốc mì chín ra ngồi xuống Sofa -> Bấm [E] bật Tivi CRT (TVController: VideoPlayer + RenderTexture + đèn màn hình PerlinNoise nhấp nháy)
+                 │           └──► Bật cờ: StoryFlag.TVNewsWatched + Nghe bản tin cảnh báo siêu bão đổ bộ
+                 ├── [Step 2 - Ăn 2 miếng & Cú Sấm cắt ngang 50% thanh Hold]:
+                 │     ├── Giữ [AltUse] ăn xong Miếng 1 -> Giữ ăn tiếp xong Miếng 2 (vơi nửa cốc: HalfEaten)
+                 │     ├── Giữ tiếp định ăn Miếng 3 tới 50% (normalizedProgress >= 0.5f) -> ĐÙNG! Sấm giật tung màn hình ngắt đứt thanh Hold!
+                 │     └── Điện thoại báo tin nhắn cảnh báo từ Nem (nemWarningSMS) -> Vừa cầm cốc mì trên Sofa vừa bấm [Tab] đọc SMS
+                 ├── [Step 3 - Đặt mì xuống bàn trà & Cutscene Ban công]:
+                 │     ├── Gió bão rít đập cửa kính -> Nam độc thoại: "Mưa to quá, hình như cửa kính ban công bị gió đập... Phải ra kiểm tra xem thế nào"
+                 │     ├── Buộc đặt nửa cốc mì xuống bàn trà trước Sofa (ItemSocket -> Bật cờ: StoryFlag.NoodleCooked) rồi đứng dậy đi ra ban công
+                 │     └── Kích hoạt BalconyCutsceneTrigger (Yêu cầu: NoodleCooked && TVNewsWatched):
+                 │           ├── Chuyển PlayerCutsceneState -> Blend Cinemachine xuống sân mưa dưới ánh đèn đường -> Thấy kẻ mặc áo mưa nhìn chằm chằm lên phòng
+                 │           └── Signal nổ ThunderEffect (Audio Ducking 0.3s + Chớp kép) -> Kẻ lạ biến mất tức thì -> Bật cờ: StoryFlag.SeenStrangerInRain
+                 └── [Step 4 - Bước ngược vào phòng -> Cúp điện tức khắc]:
+                       └── Vừa khóa chốt cửa kính và bước chân quay lại phòng khách -> PHỤT! Đèn căn hộ & Tivi CRT tắt phụt (StoryFlag.PowerOutageOccurred -> Mở màn Hồi 2!)
 ```
 
 ---

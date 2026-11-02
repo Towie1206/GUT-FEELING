@@ -83,13 +83,12 @@
   2. `[ ] Khóa then chốt xích cửa chính:` Quay lại cửa chính, gài chốt kim loại chống trộm.
   3. `[ ] Ghé mắt vào lỗ mắt mèo kiểm tra hành lang:` Nhìn thấy hành lang chung cư vắng tanh, đèn neon chập chờn.
   4. `[ ] Pha ly mì tôm ăn tối:`
-     - Bấm thử ấm siêu tốc cũ nhưng bị chập cháy đế điện $\rightarrow$ Nam độc thoại phát hiện bếp từ Arasapha và chiếc nồi nhỏ trong bếp $\rightarrow$ Nhặt nồi ra bồn rửa hứng nước $\rightarrow$ Đặt nồi lên bếp từ Arasapha bật công suất 2000W $\rightarrow$ Đợi nước sôi sùng sục $\rightarrow$ Rót vào cốc mì Handy Hảo Hảo $\rightarrow$ Click/giữ chuột ăn từng miếng (Progression Bites).
-  5. `[ ] Nhắn tin báo bình an cho Nem:`
-     - Điện thoại rung lên: Tin nhắn của Nem hỏi Nam đã dọn đến nơi an toàn chưa.
-     - Người chơi chọn câu trả lời trấn an bạn gái rằng mọi thứ đều ổn, căn phòng khá rộng rãi.
-  6. `[ ] Bật TV xem bản tin thời sự & Đóng cửa ban công:`
-     - Bấm remote: Bản tin cảnh báo bão lớn đổ bộ, khuyến cáo không ra ngoài.
-     - Ra ban công kéo cửa kính: Dưới sân chung cư ngập nước, bóng người mặc áo mưa trùm kín đầu đang ngửa cổ nhìn chằm chằm lên phòng Nam. Tia sét chớp lóa $\rightarrow$ Tiếng sấm giáng xuống $\rightarrow$ Bóng người biến mất!
+     - Bấm thử ấm siêu tốc cũ nhưng bị chập cháy đế điện $\rightarrow$ Nam độc thoại phát hiện bếp từ Arasapha và chiếc nồi nhỏ trong bếp $\rightarrow$ Nhặt nồi ra bồn rửa hứng nước $\rightarrow$ Đặt nồi lên bếp từ Arasapha bật công suất 2000W $\rightarrow$ Đợi nước sôi sùng sục $\rightarrow$ Cầm nồi chế nước sôi vào cốc mì Handy Hảo Hảo (nồi tự hạ xuống mặt bàn).
+  5. `[ ] Ngồi Sofa bật Tivi CRT & Ăn mì đêm mưa (Chuỗi 4 Nhịp Cao Trào Hồi 1):`
+     - **Step 1 (Sofa & Tivi kiểu BatPan):** Nam cầm cốc mì nóng hổi ra ngồi xuống ghế Sofa phòng khách, bấm bật Tivi CRT đối diện (`VideoPlayer` + `RenderTexture` + ánh đèn màn hình nhấp nháy phát bản tin cảnh báo siêu bão đổ bộ $\rightarrow$ `StoryFlag.TVNewsWatched`).
+     - **Step 2 (Ăn 2 miếng & Cú Sấm cắt ngang 50% thanh Hold):** Giữ chuột ăn xong **Miếng 1** $\rightarrow$ Giữ ăn tiếp xong **Miếng 2** (vơi đúng nửa cốc `HalfEaten`). Khi giữ tiếp định ăn **Miếng 3** tới **50% thanh tiến trình** thì **ĐÙNG!** — Sấm nổ giật tung màn hình ngắt đứt thanh Hold + Điện thoại báo tin nhắn từ **Nem** (`nemWarningSMS`). Vừa cầm cốc mì vừa bấm `[Tab]` mở điện thoại đọc lời dặn của Nem.
+     - **Step 3 (Đặt mì xuống bàn trà & Cutscene Ban công):** Gió rít đập cửa kính rầm rầm $\rightarrow$ Nam độc thoại: *"Mưa to quá, hình như cửa kính ban công bị gió đập... Phải ra kiểm tra xem thế nào"* $\rightarrow$ Buộc đặt nửa cốc mì xuống bàn trà trước Sofa (`StoryFlag.NoodleCooked`), đứng dậy đi ra ban công. Ngó xuống dưới ánh đèn đường thấy bóng người mặc áo mưa đứng bất động nhìn chằm chằm lên phòng $\rightarrow$ Sét đánh cái đùng trắng xóa $\rightarrow$ Bóng người biến mất (`StoryFlag.SeenStrangerInRain`).
+     - **Step 4 (Bước ngược vào phòng $\rightarrow$ Cúp điện):** Vừa cài chốt cửa kính và bước chân quay lại phòng khách thì **PHỤT!** — Mất điện toàn bộ căn hộ (`StoryFlag.PowerOutageOccurred`), mở màn Hồi 2!
 
 ---
 
@@ -848,19 +847,21 @@ public class CutsceneController : MonoBehaviour, ICutsceneService
   - 🎬 **Video 49 - 53:** `Fears To Fathom Dialogue System In Unity (Part 1 - 5)`
 * **Nghiệm thu:** Chuông điện thoại reo, mở lên đọc cuộc đối thoại ấm áp của Nem dặn dò Nam đóng cửa đi ngủ.
 
-### Tuần 11 - 12: Chuỗi Việc Nhà Hồi 1 & Cutscene Ban Công (Timeline + Cinemachine)
+### Tuần 11 - 12: Chuỗi Việc Nhà Hồi 1 & Chuỗi 4 Nhịp Cao Trào Ban Công (Timeline + Cinemachine)
 * **Công việc kỹ thuật:**
-  - Lập trình chuỗi việc nhà: Cầm ấm lấy nước bồn rửa $\rightarrow$ Bật bếp gas $\rightarrow$ Nước sôi $\rightarrow$ Rót vào bát mì tôm $\rightarrow$ Cầm đũa ăn mì.
-  - Lập trình bật Tivi xem bản tin thời sự cảnh báo bão lớn.
-  - **Dàn dựng Cutscene Ban công bằng Unity Timeline & Cinemachine:**
-    - Khi Nam kéo cửa kính ra ban công: Khóa di chuyển, kích hoạt Timeline.
-    - Cinemachine Virtual Camera chuyển góc quay từ từ zoom xuống mặt sân đẫm nước mưa $\rightarrow$ Bắt trọn bóng người mặc áo mưa đứng bất động ngửa mặt nhìn lên.
-    - Sấm sét nổ đinh tai, màn hình giật lóa trắng xóa $\rightarrow$ Bóng người biến mất $\rightarrow$ Camera blend mượt mà lại góc nhìn mắt Nam giật mình thở dốc lùi vào trong phòng.
+  - Lập trình chuỗi nấu mì: Ấm siêu tốc chập điện $\rightarrow$ Cầm nồi nhỏ lấy nước bồn rửa $\rightarrow$ Đặt lên bếp từ Arasapha đun sôi $\rightarrow$ Chế nước sôi vào cốc mì Handy Hảo Hảo (nồi tự hạ về mặt bếp).
+  - **Step 1 (Sofa & Tivi CRT kiểu BatPan Video 5):** Cầm cốc mì chín ra ngồi xuống ghế Sofa, bấm bật Tivi CRT đối diện (`TVController`: `VideoPlayer` chiếu vào `RenderTexture` 4:3 + Coroutine `DynamicScreenGlowRoutine` dùng `Mathf.PerlinNoise` làm đèn màn hình hắt sáng nhấp nháy lên phòng khách $\rightarrow$ `StoryFlag.TVNewsWatched`).
+  - **Step 2 (Ăn mì trên tay & Cú Sấm cắt ngang 50% thanh Hold):** Giữ `AltUse` ăn xong Miếng 1 & Miếng 2 (`HalfEaten`). Khi giữ ăn tiếp Miếng 3 chạm ngưỡng `normalizedProgress >= 0.5f` thì sấm sét nổ giật màn hình (`CinemachineImpulseSource`) cưỡng bức hủy thanh Hold + Điện thoại rung báo tin nhắn từ Nem (`nemWarningSMS`). Vừa cầm cốc mì vừa bấm `[Tab]` đọc lời dặn của Nem.
+  - **Step 3 (Đặt mì xuống bàn trà & Cutscene Ban công bằng Timeline + Cinemachine):** Gió bão đập cửa kính ban công $\rightarrow$ Nam độc thoại, đặt nửa cốc mì xuống `ItemSocket` trên bàn trà (`StoryFlag.NoodleCooked` — gài bẫy cho Twist Hồi 2) rồi đứng dậy đi ra ban công:
+    - Khóa di chuyển (`PlayerCutsceneState`), kích hoạt Timeline `TL_BalconyScare`.
+    - Cinemachine Virtual Camera chuyển góc quay zoom xuống mặt sân mưa dưới ánh đèn đường $\rightarrow$ Thấy bóng người mặc áo mưa đứng bất động nhìn chằm chằm lên tầng 4.
+    - Sấm sét 2 nhịp kèm Audio Ducking nổ đinh tai, chớp trắng xóa $\rightarrow$ Bóng người biến mất (`StoryFlag.SeenStrangerInRain`) $\rightarrow$ Camera blend mượt mà trả về mắt Nam.
+  - **Step 4 (Bước ngược vào phòng $\rightarrow$ Cúp điện):** Vừa khóa cửa kính bước chân lùi vào phòng khách thì toàn bộ đèn và Tivi CRT phụt tắt tức khắc (`StoryFlag.PowerOutageOccurred`), mở màn Hồi 2!
 * **Tutorial tham khảo từ Playlist:**
   - 🎬 **Video 26, 31, 32, 33:** `Fears to Fathom Food & Eating System in Unity (Part 1 - 3)`
   - 🎬 **Video 30:** `Fears to Fathom Coffee Drinking Mechanic in Unity`
-  - 🎬 **Video 12:** `Fears to Fathom TV`
-* **Nghiệm thu:** Hoàn chỉnh toàn bộ chuỗi hành động ấm cúng đời thường và đoạn Cutscene điềm báo lạnh gáy của Hồi 1.
+  - 🎬 **Video 12 (BatPan TV):** `Fears to Fathom TV` (`VideoPlayer` + `RenderTexture` + Dynamic Screen Glow)
+* **Nghiệm thu:** Hoàn chỉnh liền mạch chuỗi pha mì bếp - ngồi Sofa bật Tivi CRT ăn mì - bị sấm & SMS Nem cắt ngang - ra ban công gặp kẻ lạ và sập nguồn điện khép lại Hồi 1.
 
 ### Tuần 13: Cột Mốc Review Hồi 1 (Milestone 1 Playthrough)
 * **Nghiệm thu:** Playtest liền mạch 20 phút đầu game. Không còn lỗi logic kẹt cờ nhiệm vụ, 60 FPS ổn định.

@@ -1,13 +1,6 @@
-#pragma warning disable CS0414, CS0649
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Quản lý Bát/Cốc mì tôm trong Hồi 1 & Twist Kẻ ký sinh ăn vụng ở Hồi 2.
-/// Kế thừa kỹ thuật ăn từng miếng từ BatPan Video 3 (F2FEatingSystem: progression bites,
-/// lockout cooldown, âm thanh nhai/húp theo nhịp).
-/// Triển khai cả IInteractable (bấm [E] chế nước sôi) và IHoldInteractable (giữ [E] gắp từng miếng mì).
-/// </summary>
 public class NoodleBowlController : HoldableItemBase, IHoldInteractable
 {
     public enum NoodleState
@@ -152,27 +145,30 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
 
     private IEnumerator PourWaterRoutine(CookingPotItem pot)
     {
-        lidClosedMesh.SetActive(false);
-        lidPeeledMesh.SetActive(true);
         currentState = NoodleState.PouringWater;
-        yield return MovePotRoutine(pot.transform, pourPoint, moveToPourDuration); 
 
-        pourWaterVFX.Play();
-        if(pourWaterAudio != null)
-            pourWaterAudio.Play();
+        if (lidClosedMesh != null) lidClosedMesh.SetActive(false);
+        if (lidPeeledMesh != null) lidPeeledMesh.SetActive(true);
+
+        yield return MovePotRoutine(pot.transform, pourPoint, moveToPourDuration);
+
+        if (pourWaterVFX != null) pourWaterVFX.Play();
+        if (pourWaterAudio != null) pourWaterAudio.Play();
+
         yield return new WaitForSeconds(pourHoldDuration);
 
         pot.EmptyWater();
-        pourWaterVFX.Stop();
-        if (pourWaterAudio != null)
-            pourWaterAudio.Stop();
+        if (pourWaterVFX != null) pourWaterVFX.Stop();
+        if (pourWaterAudio != null) pourWaterAudio.Stop();
+
+        if (dryNoodleMesh != null) dryNoodleMesh.SetActive(false);
+        if (cookedNoodleMesh != null) cookedNoodleMesh.SetActive(true);
+        if (hotSteamVFX != null) hotSteamVFX.Play();
 
         yield return MovePotRoutine(pot.transform, potRestPoint, moveToRestDuration);
 
         stateChangedFrame = Time.frameCount;
         currentState = NoodleState.PouredHotWater;
-        dryNoodleMesh.SetActive(false);
-        cookedNoodleMesh.SetActive(true);
     }
 
 
