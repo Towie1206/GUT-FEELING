@@ -13,17 +13,15 @@ public class TVController : MonoBehaviour
 
     [Header("TV Hardware & Screen")]
     [SerializeField] private MeshRenderer screenRenderer;
-    [SerializeField] private int screenMaterialIndex = 0;
+    [SerializeField] private int screenMaterialIndex = 2;
     [SerializeField] private Light screenGlowLight;
     [SerializeField] private AudioSource tvStaticAudio;
-    [SerializeField] private AudioSource newsBroadcastAudio;
+    [SerializeField] private AudioSource tvNewsAudio;
 
-    [Header("Video Player Setup (BatPan Video 5)")]
+    [Header("Video Player Setup")]
     [SerializeField] private VideoPlayer videoPlayer;
-    [SerializeField] private VideoClip weatherNewsClip;
-    [SerializeField] private RenderTexture tvRenderTexture;
 
-    [Header("Dynamic Screen Glow (BatPan Video 5)")]
+    [Header("Dynamic Screen Glow")]
     [SerializeField] private float minGlowIntensity = 0.6f;
     [SerializeField] private float maxGlowIntensity = 2.2f;
     [SerializeField] private float glowFlickerSpeed = 14f;
@@ -38,23 +36,16 @@ public class TVController : MonoBehaviour
 
     [Header("Story Dialogues")]
     [SerializeField] private DialogueData watchNewsDialogue;
-    [SerializeField] private DialogueData creepyHiddenCamDialogue;
+
+    private Coroutine glowRoutine;
 
     private TVChannelState currentChannel = TVChannelState.Off;
-    private Coroutine glowRoutine;
 
     public TVChannelState CurrentChannel => currentChannel;
 
-    public string InteractionPrompt
+    private void OnEnable()
     {
-        get
-        {
-            // TODO:
-            // - Nếu đang ở chế độ HiddenCameraAct2 (Hồi 2): "[E] Xem kỹ màn hình Tivi"
-            // - Nếu đang Off: "[E] Bật Tivi"
-            // - Nếu đang WeatherNewsAct1: "[E] Tắt Tivi"
-            return currentChannel == TVChannelState.Off ? "[E] Bật Tivi" : "[E] Tắt Tivi";
-        }
+
     }
 
     private void Start()
@@ -63,6 +54,11 @@ public class TVController : MonoBehaviour
         // 1. Đảm bảo hiddenWallCamera (nếu có) mặc định tắt (hiddenWallCamera.enabled = false) ở Hồi 1 để tiết kiệm GPU
         // 2. Đăng ký lắng nghe StoryEventBus.Instance.OnStoryFlagChanged += HandleStoryFlagChanged trong Start()
         //    (Đăng ký ở Start() thay vì OnEnable() để tránh lỗi NullReferenceException nếu TVController chạy Awake() trước StoryEventBus!)
+
+        if (hiddenWallCamera != null)
+            hiddenWallCamera.enabled = false;
+        screenGlowLight.enabled = false;
+        StoryEventBus.Instance.OnStoryFlagChanged += HandleStoryFlagChanged;
     }
 
     private void OnDestroy()
@@ -70,9 +66,17 @@ public class TVController : MonoBehaviour
         // TODO:
         // Kiểm tra nếu StoryEventBus.Instance != null thì hủy đăng ký:
         // StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged
+
+        StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged;
     }
 
-    public void Interact(Player player)
+    private void SetScreenMaterial(Material mat)
+    {
+        Material[] mats = screenRenderer.sharedMaterials;
+        mats[screenMaterialIndex] = mat;
+        screenRenderer.sharedMaterials = mats;
+    }
+    public void TogglePower()
     {
         // TODO:
         // 1. Nếu đã mất điện (HasFlag(PowerOutageOccurred) && !HasFlag(PowerRestored)) -> Không bật được Tivi, thoát hàm
@@ -92,6 +96,41 @@ public class TVController : MonoBehaviour
         //      + Gán screenRenderer.material = offScreenMat
         //      + Tắt screenGlowLight.enabled = false, dừng glowRoutine
         //      + Nếu có videoPlayer: videoPlayer.Stop()
+
+        if (StoryEventBus.Instance.HasFlag(StoryFlag.PowerOutageOccurred) && !StoryEventBus.Instance.HasFlag(StoryFlag.PowerRestored))
+            return;
+
+        if (currentChannel == TVChannelState.HiddenCameraAct2)
+        {
+            StoryEventBus.Instance.SetFlag(StoryFlag.CreepyTVBroadcastSeen, true);
+            return;
+        }
+
+        if (!StoryEventBus.Instance.HasFlag(StoryFlag.TVNewsWatched))
+        {
+            StoryEventBus.Instance.SetFlag(StoryFlag.TVNewsWatched, true);
+            if (watchNewsDialogue != null)
+                StoryEventBus.Instance.RequestDialogue(watchNewsDialogue);
+        }
+
+        if (currentChannel == TVChannelState.Off)
+        {
+            currentChannel = TVChannelState.WeatherNewsAct1;
+            SetScreenMaterial(weatherNewsMat);
+            videoPlayer.Play();
+            tvNewsAudio.mute = false;
+            screenGlowLight.enabled = true;
+            glowRoutine = StartCoroutine(DynamicScreenGlowRoutine());
+        }
+        else
+        {
+            currentChannel = TVChannelState.Off;
+            SetScreenMaterial(offScreenMat);
+            tvNewsAudio.mute = true;
+            screenGlowLight.enabled = false;
+            StopCoroutine(glowRoutine);
+        }
+
     }
 
     private void HandleStoryFlagChanged(StoryFlag flag)
@@ -104,15 +143,32 @@ public class TVController : MonoBehaviour
         //    - Tự động chuyển currentChannel = TVChannelState.HiddenCameraAct2
         //    - Bật hiddenWallCamera.enabled = true (chỉ render Camera phụ khi cần để tối ưu GPU!)
         //    - Gán hiddenCameraMat lên màn hình Tivi, bật screenGlowLight và phát tiếng rè tvStaticAudio
+
+        if(flag == StoryFlag.PowerOutageOccurred)
+        {
+            currentChannel = TVChannelState.Off;
+            SetScreenMaterial(offScreenMat);
+            screenGlowLight.enabled = false;
+            tvNewsAudio.Stop();
+            tvStaticAudio.Stop();
+        }
+        else if (flag == StoryFlag.PowerRestored)
+        {
+            currentChannel = TVChannelState.HiddenCameraAct2;
+            hiddenWallCamera.enabled = true;
+            SetScreenMaterial(hiddenCameraMat);
+            screenGlowLight.enabled = true;
+            tvStaticAudio.Play();
+        }
     }
 
     private IEnumerator DynamicScreenGlowRoutine()
     {
-        // TODO:
-        // Giả lập ánh sáng hắt từ màn hình CRT nhấp nháy theo nhịp video:
-        // Trong khi currentChannel != TVChannelState.Off && screenGlowLight != null:
-        // screenGlowLight.intensity = Mathf.Lerp(minGlowIntensity, maxGlowIntensity, Mathf.PerlinNoise(Time.time * glowFlickerSpeed, 0f));
-        // yield return null;
-        yield return null;
+        while (currentChannel != TVChannelState.Off && screenGlowLight != null)
+        {
+            float noise = Mathf.PerlinNoise(Time.time * glowFlickerSpeed, 0f); // 
+            screenGlowLight.intensity = Mathf.Lerp(minGlowIntensity, maxGlowIntensity, noise);
+            yield return null;
+        }
     }
 }

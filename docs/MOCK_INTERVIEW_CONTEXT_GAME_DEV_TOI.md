@@ -134,3 +134,34 @@ Bộ tài liệu này được tổng hợp từ chuỗi video Mock Interview th
 * **Xây dựng Portfolio & CV**: Phải có link GitHub code sạch, video gameplay demo 60s và bản Build chơi thử được. Dự án nên có cả 2D và 3D.
 * **Không học vẹt từ khóa**: Trả lời phỏng vấn cần nêu được bản chất, ưu và nhược điểm thực tế chứ không chỉ học thuộc lòng định nghĩa trên mạng.
 * **Thái độ sử dụng AI (ChatGPT / Antigravity)**: Sử dụng AI để học hỏi tư duy, sinh form code chuẩn, nhưng **bắt buộc phải hiểu cặn kẽ từng dòng code và tự tay sửa lỗi được**.
+
+---
+
+## PHẦN 6: QUY CHUẨN MOCK INTERVIEW & NGÂN HÀNG CHẤT VẤN CODE THỰC CHIẾN
+
+### 1. Nguyên Tắc Phỏng Vấn (Bắt buộc cho mọi mốc trong dự án)
+- **Tuyệt đối không hỏi lý thuyết suông hay cốt truyện**: Mọi câu hỏi phỏng vấn đều phải xuất phát từ **chính các dòng code, hàm, biến và bug thực tế** trong project `GUT FEELING`.
+- **Trọng tâm chất vấn**:
+  1. *Luồng thực thi (Execution Flow)*: Thứ tự chạy giữa các hàm, Coroutine, vòng đời `Awake` / `Start` / `Update` / `LateUpdate`.
+  2. *Bẫy trạng thái (State Machine & Flags)*: Cách cập nhật biến trạng thái, tránh deadlock và race conditions giữa các frame.
+  3. *Bộ nhớ & Hiệu năng (Memory & Performance)*: Tránh GC Alloc, rò rỉ bộ nhớ (Material leak), hiểu bản chất Value Type vs Reference Type, Array Copy.
+  4. *Kiến trúc & Interface (SOLID / DIP / ISP)*: Tại sao dùng Interface này, tại sao tách class, khi nào dùng Event vs Direct Reference.
+
+### 2. Ngân Hàng Kiến Thức Thực Chiến Các Mốc Đã Qua
+* **Mốc: Chuỗi Vật Dụng Nhà Bếp, Bếp Từ Arasapha, Cốc Mì & Tivi CRT:**
+1. **Thiết kế Tương tác & Tránh Xung đột State (Remote vs Tivi)**:
+   - Tách biệt `TVRemoteInteractable` (Interactable cố định trên bàn) và `TVController` (Hardware Tivi) tuân thủ Single Responsibility Principle (SRP).
+   - Remote không kế thừa `HoldableItemBase` vì slot `PlayerHand` đang bận bưng bát mì nóng; người chơi tương tác trực tiếp bằng Raycast bấm nút từ xa.
+   - Tránh Over-engineering: Quan hệ 1-1 giữa Remote và TV ưu tiên Serialize direct reference để cho phép Remote đọc ngược trạng thái (`InteractionPrompt`) mà không làm gãy mạch code bằng Event 2 chiều rườm rà.
+2. **Quản lý Bộ nhớ Material trong Unity (Material Leak & Array Copy)**:
+   - Gọi `.material` sinh ra bản sao rác `Material (Instance)` trong RAM, gây Memory Leak và phá hủy Material của các Submesh khác trên cùng Renderer.
+   - Thuộc tính `sharedMaterials` trả về bản sao của mảng C++ native (`Getter returns a copy`). Do đó, sửa `mats[index]` trong C# bắt buộc phải gán ngược lại `sharedMaterials = mats;` để đẩy dữ liệu xuống engine.
+3. **Toán học Game: Perlin Noise vs Pure Random**:
+   - `Random.Range` sinh White Noise rời rạc, làm ánh sáng nhấp nháy giật cục (strobe light).
+   - `Mathf.PerlinNoise` sinh Gradient Coherent Noise liên tục theo thời gian $t$, kết hợp `Mathf.Lerp` tạo hiệu ứng ánh sáng màn hình CRT chập chờn mềm mại, chân thực.
+4. **Vòng đời Audio Streaming & VideoPlayer**:
+   - `VideoPlayer` chế độ `AudioSource` liên tục đẩy gói tin PCM vào Audio Buffer. Gọi `audioSource.Stop()` bị ghi đè sau 1 frame; phải dùng `audioSource.mute = true` hoặc `volume = 0` để ngắt tín hiệu ở DSP Graph cuối mà không làm đứt luồng video ngầm.
+5. **Cơ chế Socket & Bắt sự kiện Nhặt đồ (ItemSocket vs HoldableItemBase)**:
+   - Xử lý lỗi Socket bị kẹt trạng thái bằng Property động: `HasItem => currentItem != null && !currentItem.IsHeld`.
+6. **Chuỗi Coroutine Tương tác Liên hoàn (PourWaterRoutine & MovePotRoutine)**:
+   - Tách rời trạng thái nồi qua `DetachForPouring()` và `EmptyWater()`, dùng `stateChangedFrame = Time.frameCount` để ngăn tia Raycast kích hoạt nhầm thao tác ăn ngay trong cùng frame vừa chế nước.

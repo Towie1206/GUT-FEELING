@@ -15,6 +15,9 @@
   - Hướng dẫn tôi theo phương pháp từng bước (hints), để tôi tự tìm ra giải pháp và tự viết code.
 - **Quy trình nghiệm thu mốc (Milestone Mock Interview)**:
   - Mỗi khi hoàn thành xong 1 mốc kỹ thuật trong roadmap (`docs/ROADMAP_GAME_KINH_DI_1_NAM.md`), BẮT BUỘC tổ chức một buổi **Technical Mock Interview** ngắn gọn, thực chiến để phản biện, củng cố kiến thức, kiểm tra tư duy lập trình và tối ưu hóa trước khi bước sang mốc tiếp theo.
+  - **Trọng tâm bộ câu hỏi: BẮT BUỘC XOÁY SÂU VÀO CODE THỰC CHIẾN**:
+    - Không chỉ hỏi lý thuyết suông hay cốt truyện/kịch bản.
+    - Phải chất vấn trực tiếp vào **từng dòng code, luồng thực thi hàm (execution flow), biến trạng thái (state machine), cơ chế C# runtime (memory, GC, value/reference type), điều kiện chống lỗi (race conditions, null checks, frame locks)** và các bẫy ngầm trong chính các script user vừa viết.
   - Bộ câu hỏi và thang chấm tham chiếu trực tiếp từ tài liệu: `docs/MOCK_INTERVIEW_CONTEXT_GAME_DEV_TOI.md`.
 
 ## 2. BỐI CẢNH & CỐT TRUYỆN ĐÃ ĐƯỢC KHÓA (KHÔNG ĐƯỢC THAY ĐỔI)
