@@ -40,3 +40,12 @@
 ## 4. PUZZLE GIẢI ĐỐ TRONG TRÒ CHƠI 
 - Puzzle trong roadmap chỉ mang tính tham khảo user sẽ tự mình thiết kế dần dần.
 - Khi đến bước làm mini-game/puzzle giải đố, các vật phẩm trong trò chơi phải trực tiếp hỏi user nên xử lý thế nào
+
+## 5. NGÔN NGỮ MẶC ĐỊNH TRONG GAME (IN-GAME LANGUAGE)
+- **Ngôn ngữ mặc định (Default Language)**: **100% TIẾNG ANH (ENGLISH)** cho toàn bộ nội dung hiển thị trong game:
+  - Tương tác phím (Interaction Prompts): `[E] Pick up noodle cup`, `[E] Turn on TV`, `Hold [E] to Unlock`, `[Space] Stand up`, v.v.
+  - Thanh tiến trình (Hold Action Prompts): `Eating...`, `Unlocking...`.
+  - Phụ đề đối thoại & độc thoại nhân vật (Dialogues / Subtitles).
+  - Tin nhắn điện thoại (Phone SMS).
+  - Bảng nhiệm vụ (To-Do List HUD).
+- **Tiếng Việt**: Sẽ được cân nhắc/xem xét bổ sung qua hệ thống đa ngôn ngữ (Localization) trong tương lai sau khi hoàn thiện gameplay cốt lõi.

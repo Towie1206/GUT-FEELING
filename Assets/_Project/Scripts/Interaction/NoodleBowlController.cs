@@ -55,6 +55,7 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
 
     public NoodleState CurrentState => currentState;
     public int CurrentBite => currentBite;
+    public bool CanHold => isHeld && (currentState == NoodleState.PouredHotWater || currentState == NoodleState.EatingInProgress) && !isChewingLockout && Time.frameCount > stateChangedFrame;
 
     protected override void Awake()
     {
@@ -68,10 +69,10 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
         get
         {
             if (isHeld) return string.Empty;
-            if (currentState == NoodleState.Dry) return "[E] Chế nước sôi vào mì";
+            if (currentState == NoodleState.Dry) return "[E] Pour hot water";
             if (currentState == NoodleState.PouredHotWater || currentState == NoodleState.EatingInProgress)
-                return isChewingLockout ? "Đang nhai..." : "Giữ [E] Gắp miếng mì";
-            if (currentState == NoodleState.EmptyByStalker) return "[E] Kiểm tra bát mì";
+                return "[E] Pick up noodle cup";
+            if (currentState == NoodleState.EmptyByStalker) return "[E] Inspect noodle cup";
             return string.Empty;
         }
     }
@@ -114,11 +115,12 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
                 else
                 {
                     StoryEventBus.Instance.RequestDialogue(needBoiledWaterDialogue);
-                }    
+                }
                 break;
             case NoodleState.EmptyByStalker:
                 break;
             case NoodleState.PouredHotWater:
+                base.Interact(player); // bên holdableitembase sẽ gọi player.hand.equip(this)
                 break;
             case NoodleState.EatingInProgress:
                 break;
@@ -175,27 +177,37 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
     public float HoldDuration => eatHoldDuration;
     public string ActionPrompt => $"Đang ăn miếng {currentBite + 1}...";
 
-    public bool CanHold =>
-        (currentState == NoodleState.PouredHotWater || currentState == NoodleState.EatingInProgress) &&
-        !isChewingLockout &&
-        Time.frameCount > stateChangedFrame;
 
     public void OnHoldStart()
     {
-        // TODO:
-        // Phát tiếng húp mì (slurpEatAudio.Play())
+        if (slurpEatAudio != null)
+            slurpEatAudio.Play();
     }
 
     public void OnHoldProgress(float normalizedProgress)
     {
-        // TODO (Tùy chọn):
-        // Xử lý hiệu ứng rung camera nhẹ hoặc rung đầu đũa theo tiến trình normalizedProgress
+        // Chỉ kích hoạt ĐÚNG 1 LẦN khi đang ăn dở miếng 2 và chạm mốc 50%:
+        if (currentState != NoodleState.HalfEaten && currentBite == 1 && normalizedProgress >= 0.5f)
+        {
+            currentState = NoodleState.HalfEaten;
+            if (biteProgressMeshes != null && biteProgressMeshes.Length > 0 && biteProgressMeshes[0] != null)
+                biteProgressMeshes[0].SetActive(false);
+            if (halfEatenMesh != null)
+                halfEatenMesh.SetActive(true);
+
+            StoryEventBus.Instance.RequestThunder();
+
+            if (nemWarningSMS != null)
+                StoryEventBus.Instance.RequestSMS(nemWarningSMS);
+            if (afterEatDialogue != null)
+                StoryEventBus.Instance.RequestDialogue(afterEatDialogue);
+        }
     }
 
     public void OnHoldCancel()
     {
-        // TODO:
-        // Dừng tiếng húp mì (slurpEatAudio.Stop())
+        if (slurpEatAudio != null)
+            slurpEatAudio.Stop();
     }
 
     public void OnHoldComplete(Player player)
@@ -213,16 +225,24 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
         //    - Bật cờ: StoryEventBus.Instance.SetFlag(StoryFlag.NoodleCooked, true)
         //    - Bắn độc thoại afterEatDialogue ("Mưa to quá, nghe tiếng gió đập ngoài ban công...")
         //    - Bắn tin nhắn cảnh báo của Nem: StoryEventBus.Instance.RequestSMS(nemWarningSMS)
+
+        currentBite++;
+        currentState = NoodleState.EatingInProgress;
+        if (cookedNoodleMesh != null)
+            cookedNoodleMesh.SetActive(false);
+        if (biteProgressMeshes != null && biteProgressMeshes.Length > 0 && biteProgressMeshes[0] != null)
+            biteProgressMeshes[0].SetActive(true);
+
+        StartCoroutine(ChewLockoutRoutine());
+        StoryEventBus.Instance.RequestDialogue(firstBiteDialogue);
+
     }
 
     private IEnumerator ChewLockoutRoutine()
     {
         isChewingLockout = true;
-        // TODO:
-        // Chờ hết thời gian nhai nuốt (BatPan CanInteract cooldown):
-        // yield return new WaitForSeconds(chewCooldown);
-        // isChewingLockout = false;
-        yield return null;
+        yield return new WaitForSeconds(chewCooldown);
+        isChewingLockout = false;
     }
 
     private void HandleStoryFlagChanged(StoryFlag flag)

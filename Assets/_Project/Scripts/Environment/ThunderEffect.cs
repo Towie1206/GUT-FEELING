@@ -1,13 +1,7 @@
-#pragma warning disable CS0414, CS0649
 using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine;
 
-/// <summary>
-/// Hiệu ứng sấm sét điện ảnh trong đêm bão Hồi 1 & Hồi 2.
-/// Tích hợp CinemachineImpulseSource, chớp sáng kép (Pre-flash + Main flash)
-/// và Audio Ducking hạ âm lượng mưa trước khi sấm nổ.
-/// </summary>
 public class ThunderEffect : MonoBehaviour
 {
     [Header("Impulse & Camera Shake")]
@@ -26,6 +20,14 @@ public class ThunderEffect : MonoBehaviour
 
     private float originalRainVolume = 1.0f;
 
+    private void OnEnable()
+    {
+        StoryEventBus.Instance.OnThunderRequested += TriggerThunder;
+    }
+    private void OnDisable()
+    {
+        StoryEventBus.Instance.OnThunderRequested -= TriggerThunder;
+    }
     private void Awake()
     {
         if (impulseSource == null) impulseSource = GetComponent<CinemachineImpulseSource>();

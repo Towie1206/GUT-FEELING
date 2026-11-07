@@ -7,6 +7,7 @@ public class StoryEventBus : MonoBehaviour, IStoryEventService
     public static IStoryEventService Instance { get; private set; }
 
     public event Action<DialogueData> OnDialogueRequested;
+    public event Action OnThunderRequested;
     public event Action<SMSData> OnSMSRequested;
     public event Action<StoryFlag> OnStoryFlagChanged;
 
@@ -48,5 +49,10 @@ public class StoryEventBus : MonoBehaviour, IStoryEventService
     {
         if (data != null)
             OnSMSRequested?.Invoke(data);
+    }
+
+    public void RequestThunder()
+    {
+        OnThunderRequested?.Invoke();
     }
 }

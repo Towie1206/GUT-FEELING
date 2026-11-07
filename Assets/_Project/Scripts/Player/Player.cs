@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public PlayerMovement movement { get; private set; }
     public PlayerLook look { get; private set; }
     public PlayerInspect inspect { get; private set; }
+    public PlayerSofaState sofaState { get; private set; }
 
     public Vector2 moveInput { get; private set; }
     public Vector2 mousePosition { get; private set; }
@@ -22,7 +23,13 @@ public class Player : MonoBehaviour
 
     public event Action<bool> OnPhoneToggled;
     public void SetPhoneActive(bool isOpen) => OnPhoneToggled?.Invoke(isOpen);
-    public void ClosePhone() => stateMachine.ChangeState(freeState);
+    public void ClosePhone()
+    {
+        if (movement.IsSitting)
+            stateMachine.ChangeState(sofaState);
+        else
+            stateMachine.ChangeState(freeState);
+    }
 
 
     private void Awake()
@@ -32,6 +39,7 @@ public class Player : MonoBehaviour
         freeState = new PlayerFreeState(this, stateMachine);
         inspectState = new PlayerInspectState(this, stateMachine);
         phoneState = new PlayerPhoneState(this, stateMachine);
+        sofaState = new PlayerSofaState(this, stateMachine);
 
         stateMachine.Initialize(freeState);
         movement = GetComponent<PlayerMovement>();

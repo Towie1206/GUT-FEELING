@@ -42,12 +42,6 @@ public class PlayerFreeState : PlayerState
             player.hand.DropCurrentItem(player.look.CameraTransform.forward);
         }
 
-
-        if (input.Player.Interact.IsPressed())
-        {
-            player.interaction.UpdateHold(player);
-        }
-
         if (input.Player.Interact.WasReleasedThisFrame())
         {
             player.interaction.CancelHold();

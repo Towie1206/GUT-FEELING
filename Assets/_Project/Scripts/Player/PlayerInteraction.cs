@@ -133,6 +133,12 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (isHolding)
         {
+            // NẾU MÓN ĐỒ ĐÃ BỊ HỦY QUYỀN GIỮ (Ví dụ mì bị đổi sang HalfEaten -> CanHold thành false):
+            if (currentHoldInteractable == null || !currentHoldInteractable.CanHold)
+            {
+                CancelHold(); // Tự động ngắt thanh tiến trình ngay lập tức!
+                return;
+            }
             currentHoldTimer += Time.deltaTime;
             float t = currentHoldTimer / currentHoldInteractable.HoldDuration;
             currentHoldInteractable.OnHoldProgress(t); // phát cho item biết tiến trình giữ đã thay đổi

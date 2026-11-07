@@ -1,6 +1,5 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
 using System;
+using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
@@ -14,6 +13,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     private Rigidbody rb;
+
+    private Transform currentStandPoint;
+    public bool IsSitting => rb.isKinematic;
 
     public float currentSpeed { get; private set; }
 
@@ -46,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (rb.isKinematic) return;
         HandleMovement();
     }
 
@@ -61,5 +64,19 @@ public class PlayerMovement : MonoBehaviour
     public void Stop()
     {
         moveInput = Vector2.zero;
+    }
+
+    public void SitToSofa(Transform sitPoint, Transform standPoint)
+    {
+        transform.position = sitPoint.position;
+        currentStandPoint = standPoint;
+        rb.isKinematic = true;
+        Stop();
+    }
+
+    public void StandUpFromSofa()
+    {
+        transform.position = currentStandPoint.position;
+        rb.isKinematic = false;
     }
 }
