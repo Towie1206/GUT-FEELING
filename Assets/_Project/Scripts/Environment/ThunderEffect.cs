@@ -1,6 +1,6 @@
 using System.Collections;
-using UnityEngine;
 using Unity.Cinemachine;
+using UnityEngine;
 
 public class ThunderEffect : MonoBehaviour
 {
@@ -22,11 +22,28 @@ public class ThunderEffect : MonoBehaviour
 
     private void OnEnable()
     {
-        StoryEventBus.Instance.OnThunderRequested += TriggerThunder;
+        if (StoryEventBus.Instance != null)
+        {
+            StoryEventBus.Instance.OnThunderRequested += TriggerThunder;
+        }
     }
+
+    private void Start()
+    {
+        // Đảm bảo đăng ký nếu StoryEventBus được khởi tạo sau OnEnable
+        if (StoryEventBus.Instance != null)
+        {
+            StoryEventBus.Instance.OnThunderRequested -= TriggerThunder;
+            StoryEventBus.Instance.OnThunderRequested += TriggerThunder;
+        }
+    }
+
     private void OnDisable()
     {
-        StoryEventBus.Instance.OnThunderRequested -= TriggerThunder;
+        if (StoryEventBus.Instance != null)
+        {
+            StoryEventBus.Instance.OnThunderRequested -= TriggerThunder;
+        }
     }
     private void Awake()
     {
@@ -46,25 +63,33 @@ public class ThunderEffect : MonoBehaviour
 
     private IEnumerator FlashLightRoutine()
     {
-        // TODO:
-        // Tạo hiệu ứng chớp sét 2 nhịp chân thực:
-        // 1. Nhịp mồi (Pre-flash):
-        //    - lightningLight.intensity = maxIntensity * 0.5f
-        //    - yield return new WaitForSeconds(0.04f)
-        //    - lightningLight.intensity = 0f
-        //    - yield return new WaitForSeconds(0.05f)
-        // 2. Nhịp giáng chính (Main strike):
-        //    - lightningLight.intensity = maxIntensity
-        //    - Lerp mượt mà từ maxIntensity về 0 theo thời gian flashDuration
-        yield return null;
+        lightningLight.intensity = maxIntensity * 0.5f;
+        yield return new WaitForSeconds(0.04f);
+        lightningLight.intensity = 0f;
+        yield return new WaitForSeconds(0.05f);
+
+        lightningLight.intensity = maxIntensity;
+        float elapsedTime = 0f;
+        while (elapsedTime < flashDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            lightningLight.intensity = Mathf.Lerp(maxIntensity, 0f, elapsedTime / flashDuration);
+            yield return null;
+        }
+        lightningLight.intensity = 0f;
     }
 
     private IEnumerator AudioDuckingRoutine()
     {
-        // TODO:
-        // 1. Hạ volume rainAudioSource xuống rainDuckedVolume
-        // 2. Chờ tiếng sấm vang lên: yield return new WaitForSeconds(duckLeadTime + 1.5f)
-        // 3. Khôi phục dần volume rainAudioSource về originalRainVolume
-        yield return null;
+        rainAudioSource.volume = rainDuckedVolume;
+        yield return new WaitForSeconds(duckLeadTime + 1.5f);
+        float elapsedTime = 0f;
+        while(elapsedTime < duckLeadTime)
+        {
+            elapsedTime += Time.deltaTime;
+            rainAudioSource.volume = Mathf.Lerp(rainDuckedVolume, originalRainVolume, elapsedTime / duckLeadTime);
+            yield return null;
+        }
+        rainAudioSource.volume = originalRainVolume;
     }
 }

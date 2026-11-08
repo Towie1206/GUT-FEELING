@@ -52,7 +52,7 @@ public class PlayerSofaState : PlayerState
         {
             stateMachine.ChangeState(player.phoneState);
         }
-        if (input.Player.Crouch.WasPerformedThisFrame())
+        if (input.Player.StandUp.WasPerformedThisFrame())
         {
             player.movement.StandUpFromSofa();
             stateMachine.ChangeState(player.freeState);

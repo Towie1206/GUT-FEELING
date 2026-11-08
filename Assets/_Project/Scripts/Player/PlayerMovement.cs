@@ -69,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
     public void SitToSofa(Transform sitPoint, Transform standPoint)
     {
         transform.position = sitPoint.position;
+        transform.rotation = sitPoint.rotation;
         currentStandPoint = standPoint;
         rb.isKinematic = true;
         Stop();

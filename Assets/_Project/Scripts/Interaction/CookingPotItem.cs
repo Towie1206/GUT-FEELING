@@ -36,7 +36,7 @@ public class CookingPotItem : HoldableItemBase
             if (!IsUnlocked) return "[E] Use";
             if (IsBoiled) return "[E] Pick up boil pot (Cooked)";
             if (HasWater) return "[E] Pick up boil pot";
-            return $"[E] Nhặt {itemName}";
+            return $"[E] Pick up {itemName}";
         }
     }
 

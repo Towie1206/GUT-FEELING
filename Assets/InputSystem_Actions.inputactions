@@ -155,6 +155,16 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "StandUp",
+                    "type": "Button",
+                    "id": "42a5defc-24e2-442a-afe3-c52616b5bb94",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -606,6 +616,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Phone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "604c71d1-a49e-46f9-b083-4851facaeec0",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "StandUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

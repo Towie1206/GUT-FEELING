@@ -241,6 +241,16 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""StandUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""42a5defc-24e2-442a-afe3-c52616b5bb94"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -692,6 +702,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Phone"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""604c71d1-a49e-46f9-b083-4851facaeec0"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""StandUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1304,6 +1325,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_InspectRotate = m_Player.FindAction("InspectRotate", throwIfNotFound: true);
         m_Player_AltUse = m_Player.FindAction("AltUse", throwIfNotFound: true);
         m_Player_Phone = m_Player.FindAction("Phone", throwIfNotFound: true);
+        m_Player_StandUp = m_Player.FindAction("StandUp", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1412,6 +1434,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_InspectRotate;
     private readonly InputAction m_Player_AltUse;
     private readonly InputAction m_Player_Phone;
+    private readonly InputAction m_Player_StandUp;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1484,6 +1507,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Phone => m_Wrapper.m_Player_Phone;
         /// <summary>
+        /// Provides access to the underlying input action "Player/StandUp".
+        /// </summary>
+        public InputAction @StandUp => m_Wrapper.m_Player_StandUp;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1554,6 +1581,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Phone.started += instance.OnPhone;
             @Phone.performed += instance.OnPhone;
             @Phone.canceled += instance.OnPhone;
+            @StandUp.started += instance.OnStandUp;
+            @StandUp.performed += instance.OnStandUp;
+            @StandUp.canceled += instance.OnStandUp;
         }
 
         /// <summary>
@@ -1610,6 +1640,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Phone.started -= instance.OnPhone;
             @Phone.performed -= instance.OnPhone;
             @Phone.canceled -= instance.OnPhone;
+            @StandUp.started -= instance.OnStandUp;
+            @StandUp.performed -= instance.OnStandUp;
+            @StandUp.canceled -= instance.OnStandUp;
         }
 
         /// <summary>
@@ -2015,6 +2048,13 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPhone(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "StandUp" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnStandUp(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

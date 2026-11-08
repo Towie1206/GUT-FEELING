@@ -123,6 +123,7 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
                 base.Interact(player); // bên holdableitembase sẽ gọi player.hand.equip(this)
                 break;
             case NoodleState.EatingInProgress:
+                base.Interact(player); // bên holdableitembase sẽ gọi player.hand.equip(this)
                 break;
         }
 
@@ -175,7 +176,7 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
 
 
     public float HoldDuration => eatHoldDuration;
-    public string ActionPrompt => $"Đang ăn miếng {currentBite + 1}...";
+    public string ActionPrompt => $"Eating {currentBite + 1}...";
 
 
     public void OnHoldStart()
@@ -252,5 +253,14 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
         // - Chuyển currentState = NoodleState.EmptyByStalker
         // - Tắt halfEatenMesh, bật emptyStalkerMesh
         // - Bật cốc nước lạ uống dở bên cạnh (mysteriousHalfDrunkCup.SetActive(true))
+    }
+
+    public override void OnPlace(Transform socketPoint)
+    {
+        base.OnPlace(socketPoint);
+        if (currentState == NoodleState.HalfEaten)
+        {
+            StoryEventBus.Instance.SetFlag(StoryFlag.NoodleCooked, true);
+        }
     }
 }
