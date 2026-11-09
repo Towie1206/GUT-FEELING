@@ -160,10 +160,10 @@ public class PhoneSMSUI : MonoBehaviour
         GameObject newBubble = Instantiate(prefab, contentTransform);
         TextMeshProUGUI textComponent = newBubble.GetComponentInChildren<TextMeshProUGUI>();
         textComponent.text = message;
-        if (textComponent.preferredWidth > 220f)
+        if (textComponent.preferredWidth > 260f)
         {
             LayoutElement layout = newBubble.GetComponentInChildren<LayoutElement>();
-            layout.preferredWidth = 220f;
+            layout.preferredWidth = 260f;
         }
 
         if (!chatHistory.ContainsKey(contact))
@@ -178,6 +178,10 @@ public class PhoneSMSUI : MonoBehaviour
     private void ScrollToBottom()
     {
         Canvas.ForceUpdateCanvases();
+        if (contentTransform is RectTransform contentRect)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
+        }
         chatScrollRect.verticalNormalizedPosition = 0f;
     }
 
