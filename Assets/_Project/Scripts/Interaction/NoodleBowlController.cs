@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NoodleBowlController : HoldableItemBase, IHoldInteractable
+public class NoodleBowlController : HoldableItemBase
 {
     public enum NoodleState
     {
@@ -55,13 +55,20 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
 
     public NoodleState CurrentState => currentState;
     public int CurrentBite => currentBite;
-    public bool CanHold => isHeld && (currentState == NoodleState.PouredHotWater || currentState == NoodleState.EatingInProgress) && !isChewingLockout && Time.frameCount > stateChangedFrame;
+
+    [SerializeField] private Vector3 eatLocalPos = new Vector3(0.05f, -0.04f, -0.12f);
+    [SerializeField] private Vector3 eatLocalEuler = new Vector3(0f, 0f, 45f);
+    [SerializeField] private float raiseDuration = 0.35f;
+    private bool isEating = false;
 
     protected override void Awake()
     {
         base.Awake();
         itemName = "Mì Ly Handy Hảo Hảo";
         placeableID = "NoodleBowl";
+
+        heldPositionOffset = new Vector3(0.08f, -0.07f, -0.02f);
+        heldRotationOffset = new Vector3(-8f, 0f, 25f);
     }
 
     public override string InteractionPrompt
@@ -179,65 +186,6 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
     public string ActionPrompt => $"Eating {currentBite + 1}...";
 
 
-    public void OnHoldStart()
-    {
-        if (slurpEatAudio != null)
-            slurpEatAudio.Play();
-    }
-
-    public void OnHoldProgress(float normalizedProgress)
-    {
-        // Chỉ kích hoạt ĐÚNG 1 LẦN khi đang ăn dở miếng 2 và chạm mốc 50%:
-        if (currentState != NoodleState.HalfEaten && currentBite == 1 && normalizedProgress >= 0.5f)
-        {
-            currentState = NoodleState.HalfEaten;
-            if (biteProgressMeshes != null && biteProgressMeshes.Length > 0 && biteProgressMeshes[0] != null)
-                biteProgressMeshes[0].SetActive(false);
-            if (halfEatenMesh != null)
-                halfEatenMesh.SetActive(true);
-
-            StoryEventBus.Instance.RequestThunder();
-
-            if (nemWarningSMS != null)
-                StoryEventBus.Instance.RequestSMS(nemWarningSMS);
-            if (afterEatDialogue != null)
-                StoryEventBus.Instance.RequestDialogue(afterEatDialogue);
-        }
-    }
-
-    public void OnHoldCancel()
-    {
-        if (slurpEatAudio != null)
-            slurpEatAudio.Stop();
-    }
-
-    public void OnHoldComplete(Player player)
-    {
-        // TODO:
-        // 1. Tăng currentBite lên 1
-        // 2. Cập nhật mesh: ẩn mức cũ, bật biteProgressMeshes[currentBite - 1] (kế thừa từ BatPan pizzapieces[])
-        // 3. Khởi chạy Coroutine khóa thao tác tạm thời: StartCoroutine(ChewLockoutRoutine())
-        // 4. Nếu currentBite == 1:
-        //    - currentState = NoodleState.EatingInProgress
-        //    - Bắn độc thoại firstBiteDialogue ("Nóng hổi vừa thổi vừa ăn...")
-        // 5. Nếu currentBite >= maxAct1Bites:
-        //    - currentState = NoodleState.HalfEaten (Dừng lại chừa nửa bát!)
-        //    - Bật halfEatenMesh
-        //    - Bật cờ: StoryEventBus.Instance.SetFlag(StoryFlag.NoodleCooked, true)
-        //    - Bắn độc thoại afterEatDialogue ("Mưa to quá, nghe tiếng gió đập ngoài ban công...")
-        //    - Bắn tin nhắn cảnh báo của Nem: StoryEventBus.Instance.RequestSMS(nemWarningSMS)
-
-        currentBite++;
-        currentState = NoodleState.EatingInProgress;
-        if (cookedNoodleMesh != null)
-            cookedNoodleMesh.SetActive(false);
-        if (biteProgressMeshes != null && biteProgressMeshes.Length > 0 && biteProgressMeshes[0] != null)
-            biteProgressMeshes[0].SetActive(true);
-
-        StartCoroutine(ChewLockoutRoutine());
-        StoryEventBus.Instance.RequestDialogue(firstBiteDialogue);
-
-    }
 
     private IEnumerator ChewLockoutRoutine()
     {
@@ -261,6 +209,87 @@ public class NoodleBowlController : HoldableItemBase, IHoldInteractable
         if (currentState == NoodleState.HalfEaten)
         {
             StoryEventBus.Instance.SetFlag(StoryFlag.NoodleCooked, true);
+        }
+    }
+
+    public override void OnSway(float lookDelta)
+    {
+        if (isEating)
+            return;
+        base.OnSway(lookDelta);
+    }
+
+    public override void OnUse()
+    {
+        base.OnUse();
+        if (!isHeld || isEating || isChewingLockout || (currentState != NoodleState.PouredHotWater && currentState != NoodleState.EatingInProgress))
+            return;
+
+        StartCoroutine(EatBiteRoutine());
+    }
+
+    private IEnumerator EatBiteRoutine()
+    {
+        isEating = true;
+        float elapsed = 0f;
+
+        while (elapsed < raiseDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / raiseDuration);
+            transform.localPosition = Vector3.Lerp(heldPositionOffset, eatLocalPos, t);
+            transform.localRotation = Quaternion.Slerp(Quaternion.Euler(heldRotationOffset), Quaternion.Euler(eatLocalEuler), t);
+            yield return null;
+        }
+        if (slurpEatAudio != null)
+            slurpEatAudio.Play();
+        elapsed = 0f;
+        while (elapsed < eatHoldDuration)
+        {
+            elapsed += Time.deltaTime;
+            float bob = Mathf.Sin(Time.time * 18f) * 2.5f; // Hiệu ứng nhấp nhô khi ăn\
+            transform.localRotation = Quaternion.Euler(eatLocalEuler.x, eatLocalEuler.y, eatLocalEuler.z + bob);
+            yield return null;
+            if (currentBite == 1 && elapsed >= eatHoldDuration * 0.5f)
+            {
+                break;
+            }
+        }
+        if (slurpEatAudio != null)
+            slurpEatAudio.Stop();
+        currentBite++;
+        elapsed = 0f;
+        if (currentBite == 1)
+        {
+            currentState = NoodleState.EatingInProgress;
+            cookedNoodleMesh.SetActive(false);
+            biteProgressMeshes[0].SetActive(true);
+            StoryEventBus.Instance.RequestDialogue(firstBiteDialogue);
+        }
+        if (currentBite >= 2)
+        {
+            currentState = NoodleState.HalfEaten;
+            biteProgressMeshes[0].SetActive(false);
+            halfEatenMesh.SetActive(true);
+            StoryEventBus.Instance.RequestThunder();
+        }
+        Quaternion startRot = transform.localRotation;
+        while (elapsed < raiseDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / raiseDuration);
+            transform.localPosition = Vector3.Lerp(eatLocalPos, heldPositionOffset, t);
+            transform.localRotation = Quaternion.Slerp(startRot, Quaternion.Euler(heldRotationOffset), t);
+            yield return null;
+        }
+        transform.localPosition = heldPositionOffset;
+        transform.localRotation = Quaternion.Euler(heldRotationOffset);
+        isEating = false;
+        StartCoroutine(ChewLockoutRoutine());
+        if (currentBite >= 2) 
+        {
+            StoryEventBus.Instance.RequestSMS(nemWarningSMS);
+            StoryEventBus.Instance.RequestDialogue(afterEatDialogue);
         }
     }
 }
