@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public PlayerFreeState freeState { get; private set; }
     public PlayerInspectState inspectState { get; private set; }
     public PlayerPhoneState phoneState { get; private set; }
+    public PlayerCutsceneState cutsceneState { get; private set; }
 
     public PlayerMovement movement { get; private set; }
     public PlayerLook look { get; private set; }
@@ -31,6 +32,11 @@ public class Player : MonoBehaviour
             stateMachine.ChangeState(freeState);
     }
 
+    private void Start()
+    {
+        CutsceneController.Instance.OnCutsceneStarted += HandleCutsceneStarted;
+        CutsceneController.Instance.OnCutsceneEnded += HandleCutsceneEnded;
+    }
 
     private void Awake()
     {
@@ -40,6 +46,7 @@ public class Player : MonoBehaviour
         inspectState = new PlayerInspectState(this, stateMachine);
         phoneState = new PlayerPhoneState(this, stateMachine);
         sofaState = new PlayerSofaState(this, stateMachine);
+        cutsceneState = new PlayerCutsceneState(this, stateMachine);
 
         stateMachine.Initialize(freeState);
         movement = GetComponent<PlayerMovement>();
@@ -60,6 +67,11 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         input.Disable();
+        if (CutsceneController.Instance != null)
+        {
+            CutsceneController.Instance.OnCutsceneStarted -= HandleCutsceneStarted;
+            CutsceneController.Instance.OnCutsceneEnded -= HandleCutsceneEnded;
+        }
     }
 
     private void Update()
@@ -67,4 +79,12 @@ public class Player : MonoBehaviour
         stateMachine.currentState.Update();
     }
 
+    private void HandleCutsceneStarted()
+    {
+        stateMachine.ChangeState(cutsceneState);
+    }
+    private void HandleCutsceneEnded()
+    {
+        stateMachine.ChangeState(freeState);
+    }
 }

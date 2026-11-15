@@ -30,11 +30,11 @@ public class TodoListUI : MonoBehaviour
     [Header("List Configuration")]
     [SerializeField] private List<TodoItem> act1TodoList = new List<TodoItem>
     {
-        new TodoItem { taskDescription = "Kéo khóa mở vali & đặt chìa khóa lên bàn", completionFlag = StoryFlag.KeyPlacedOnTable },
-        new TodoItem { taskDescription = "Bật Tivi CRT theo dõi bản tin dự báo bão", completionFlag = StoryFlag.TVNewsWatched },
-        new TodoItem { taskDescription = "Hứng nước và đặt ấm lên bếp ga đun sôi", completionFlag = StoryFlag.WaterBoiling },
-        new TodoItem { taskDescription = "Chế nước sôi vào bát mì và ăn lót dạ", completionFlag = StoryFlag.NoodleCooked },
-        new TodoItem { taskDescription = "Kiểm tra và đóng chốt cửa kính ban công", completionFlag = StoryFlag.SeenStrangerInRain }
+        new TodoItem { taskDescription = "Unpack suitcase and place keys on table", completionFlag = StoryFlag.KeyPlacedOnTable },
+        new TodoItem { taskDescription = "Turn on CRT TV to watch storm forecast", completionFlag = StoryFlag.TVNewsWatched },
+        new TodoItem { taskDescription = "Fill kettle and boil water on stove", completionFlag = StoryFlag.WaterBoiling },
+        new TodoItem { taskDescription = "Pour boiling water into instant noodles and eat", completionFlag = StoryFlag.NoodleCooked },
+        new TodoItem { taskDescription = "Check the balcony and sliding glass door", completionFlag = StoryFlag.SeenStrangerInRain }
     };
 
     [Header("Fade & Animation Settings")]

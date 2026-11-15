@@ -80,18 +80,35 @@ public class NoodleBowlController : HoldableItemBase
             if (currentState == NoodleState.PouredHotWater || currentState == NoodleState.EatingInProgress)
                 return "[E] Pick up noodle cup";
             if (currentState == NoodleState.EmptyByStalker) return "[E] Inspect noodle cup";
+            if (StoryEventBus.Instance.HasFlag(StoryFlag.SeenStrangerInRain) && !StoryEventBus.Instance.HasFlag(StoryFlag.PowerOutageOccurred)) return "[E] Pick up noodle cup";
             return string.Empty;
         }
     }
 
     private void OnEnable()
     {
-        StoryEventBus.Instance.OnStoryFlagChanged += HandleStoryFlagChanged;
+        if (StoryEventBus.Instance != null)
+        {
+            StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged;
+            StoryEventBus.Instance.OnStoryFlagChanged += HandleStoryFlagChanged;
+        }
+    }
+
+    private void Start()
+    {
+        if (StoryEventBus.Instance != null)
+        {
+            StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged;
+            StoryEventBus.Instance.OnStoryFlagChanged += HandleStoryFlagChanged;
+        }
     }
 
     private void OnDisable()
     {
-        StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged;
+        if (StoryEventBus.Instance != null)
+        {
+            StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged;
+        }
     }
 
     public override void Interact(Player player)
@@ -130,6 +147,9 @@ public class NoodleBowlController : HoldableItemBase
                 base.Interact(player); // bên holdableitembase sẽ gọi player.hand.equip(this)
                 break;
             case NoodleState.EatingInProgress:
+                base.Interact(player); // bên holdableitembase sẽ gọi player.hand.equip(this)
+                break;
+            case NoodleState.HalfEaten:
                 base.Interact(player); // bên holdableitembase sẽ gọi player.hand.equip(this)
                 break;
         }
@@ -222,7 +242,19 @@ public class NoodleBowlController : HoldableItemBase
     public override void OnUse()
     {
         base.OnUse();
-        if (!isHeld || isEating || isChewingLockout || (currentState != NoodleState.PouredHotWater && currentState != NoodleState.EatingInProgress))
+
+        // 1. Kiểm tra các điều kiện cấm cơ bản
+        if (!isHeld || isEating || isChewingLockout)
+            return;
+
+        // 2. Định nghĩa các trường hợp HỢP LỆ được phép ăn
+        bool canEatInitial = (currentState == NoodleState.PouredHotWater || currentState == NoodleState.EatingInProgress);
+        bool canEatReliefBite = (currentState == NoodleState.HalfEaten
+                                && StoryEventBus.Instance.HasFlag(StoryFlag.SeenStrangerInRain)
+                                && !StoryEventBus.Instance.HasFlag(StoryFlag.PowerOutageOccurred));
+
+        // 3. Nếu không thuộc bất kỳ trường hợp hợp lệ nào -> Chặn lại
+        if (!canEatInitial && !canEatReliefBite)
             return;
 
         StartCoroutine(EatBiteRoutine());
@@ -247,10 +279,14 @@ public class NoodleBowlController : HoldableItemBase
         while (elapsed < eatHoldDuration)
         {
             elapsed += Time.deltaTime;
-            float bob = Mathf.Sin(Time.time * 18f) * 2.5f; // Hiệu ứng nhấp nhô khi ăn\
+            float bob = Mathf.Sin(Time.time * 18f) * 2.5f; // Hiệu ứng nhấp nhô khi ăn
             transform.localRotation = Quaternion.Euler(eatLocalEuler.x, eatLocalEuler.y, eatLocalEuler.z + bob);
             yield return null;
             if (currentBite == 1 && elapsed >= eatHoldDuration * 0.5f)
+            {
+                break;
+            }
+            if (currentBite == 2 && elapsed >= 1.25f)
             {
                 break;
             }
@@ -266,12 +302,16 @@ public class NoodleBowlController : HoldableItemBase
             biteProgressMeshes[0].SetActive(true);
             StoryEventBus.Instance.RequestDialogue(firstBiteDialogue);
         }
-        if (currentBite >= 2)
+        if (currentBite == 2)
         {
             currentState = NoodleState.HalfEaten;
             biteProgressMeshes[0].SetActive(false);
             halfEatenMesh.SetActive(true);
             StoryEventBus.Instance.RequestThunder();
+        }
+        if (currentBite >= 3)
+        {
+            StoryEventBus.Instance.SetFlag(StoryFlag.PowerOutageOccurred, true);
         }
         Quaternion startRot = transform.localRotation;
         while (elapsed < raiseDuration)
@@ -286,7 +326,7 @@ public class NoodleBowlController : HoldableItemBase
         transform.localRotation = Quaternion.Euler(heldRotationOffset);
         isEating = false;
         StartCoroutine(ChewLockoutRoutine());
-        if (currentBite >= 2) 
+        if (currentBite == 2)
         {
             StoryEventBus.Instance.RequestSMS(nemWarningSMS);
             StoryEventBus.Instance.RequestDialogue(afterEatDialogue);

@@ -56,4 +56,13 @@ public class PlayerLook : MonoBehaviour
     }
     
     public Transform CameraTransform => camPivot;
+
+    public void ResetCameraTransform()
+    {
+        if (playerCamera != null)
+        {
+            playerCamera.transform.localPosition = Vector3.zero;
+            playerCamera.transform.localRotation = Quaternion.identity;
+        }
+    }
 }

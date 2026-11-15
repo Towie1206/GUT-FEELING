@@ -20,7 +20,7 @@ public class PlayerInteraction : MonoBehaviour
     private IInteractable currentInteractable;
     private IHoldInteractable currentHoldInteractable;
     private Collider lastHitCollider;
-
+    private string lastPrompt;
 
     private bool isHolding;
     private float currentHoldTimer;
@@ -35,6 +35,11 @@ public class PlayerInteraction : MonoBehaviour
     {
         activeCrosshair.SetActive(false);
     }
+    private void OnDisable()
+    {
+        ClearInteraction();
+    }
+
     private void Update()
     {
         CheckInteraction();
@@ -47,27 +52,37 @@ public class PlayerInteraction : MonoBehaviour
         // 2. Bắn Raycast kiểm tra mỗi frame
         if (Physics.Raycast(ray, out RaycastHit hitInfo, interactDistance, interactableLayer))
         {
-            if (hitInfo.collider == lastHitCollider) return;
-            lastHitCollider = hitInfo.collider;
-
-            IInteractable interactable = hitInfo.collider.GetComponent<IInteractable>();
-            IHoldInteractable holdInteractable = hitInfo.collider.GetComponent<IHoldInteractable>();
-
-            if (isHolding && isWorldHold && currentHoldInteractable != holdInteractable)
-                CancelHold();
-
-            if (interactable != null || holdInteractable != null)
+            if (hitInfo.collider != lastHitCollider)
             {
+                lastHitCollider = hitInfo.collider;
+
+                IInteractable interactable = hitInfo.collider.GetComponent<IInteractable>() ?? hitInfo.collider.GetComponentInParent<IInteractable>();
+                IHoldInteractable holdInteractable = hitInfo.collider.GetComponent<IHoldInteractable>() ?? hitInfo.collider.GetComponentInParent<IHoldInteractable>();
+
+                if (isHolding && isWorldHold && currentHoldInteractable != holdInteractable)
+                    CancelHold();
+
                 currentInteractable = interactable;
 
                 if (!isHolding || isWorldHold)
                     currentHoldInteractable = holdInteractable;
+            }
 
+            if (currentInteractable != null || currentHoldInteractable != null)
+            {
                 string prompt = currentInteractable != null ? currentInteractable.InteractionPrompt : (currentHoldInteractable != null ? currentHoldInteractable.ActionPrompt : string.Empty);
-                if (!string.IsNullOrEmpty(prompt))
-                    OnInteractableFound?.Invoke(prompt);
 
-                activeCrosshair.SetActive(true);
+                if (prompt != lastPrompt)
+                {
+                    lastPrompt = prompt;
+                    if (!string.IsNullOrEmpty(prompt))
+                        OnInteractableFound?.Invoke(prompt);
+                    else
+                        OnInteractableLost?.Invoke();
+                }
+
+                if (activeCrosshair != null)
+                    activeCrosshair.SetActive(true);
             }
             else
             {
@@ -91,8 +106,10 @@ public class PlayerInteraction : MonoBehaviour
             currentHoldInteractable = null;
 
         lastHitCollider = null;
+        lastPrompt = null;
         OnInteractableLost?.Invoke();
-        activeCrosshair.SetActive(false);
+        if (activeCrosshair != null)
+            activeCrosshair.SetActive(false);
     }
 
     public void TryToInteract(Player player)
