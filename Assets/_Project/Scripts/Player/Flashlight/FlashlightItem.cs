@@ -36,7 +36,8 @@ public class FlashlightItem : MonoBehaviour, IInteractable, IHoldable
     {
         if(isHeld) return;
 
-        player.hand.Equip(this);
+        player.hand.EquipLeftHand(this);
+        StoryEventBus.Instance.SetFlag(StoryFlag.FlashlightAcquired, true);
 
     }   
     

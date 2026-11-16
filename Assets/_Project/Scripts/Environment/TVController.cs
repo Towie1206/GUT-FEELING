@@ -50,11 +50,6 @@ public class TVController : MonoBehaviour
 
     private void Start()
     {
-        // TODO:
-        // 1. Đảm bảo hiddenWallCamera (nếu có) mặc định tắt (hiddenWallCamera.enabled = false) ở Hồi 1 để tiết kiệm GPU
-        // 2. Đăng ký lắng nghe StoryEventBus.Instance.OnStoryFlagChanged += HandleStoryFlagChanged trong Start()
-        //    (Đăng ký ở Start() thay vì OnEnable() để tránh lỗi NullReferenceException nếu TVController chạy Awake() trước StoryEventBus!)
-
         if (hiddenWallCamera != null)
             hiddenWallCamera.enabled = false;
         screenGlowLight.enabled = false;
@@ -63,10 +58,6 @@ public class TVController : MonoBehaviour
 
     private void OnDestroy()
     {
-        // TODO:
-        // Kiểm tra nếu StoryEventBus.Instance != null thì hủy đăng ký:
-        // StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged
-
         StoryEventBus.Instance.OnStoryFlagChanged -= HandleStoryFlagChanged;
     }
 
@@ -78,25 +69,6 @@ public class TVController : MonoBehaviour
     }
     public void TogglePower()
     {
-        // TODO:
-        // 1. Nếu đã mất điện (HasFlag(PowerOutageOccurred) && !HasFlag(PowerRestored)) -> Không bật được Tivi, thoát hàm
-        // 2. Nếu đang ở kênh HiddenCameraAct2 (Hồi 2):
-        //    - Bật cờ StoryEventBus.Instance.SetFlag(StoryFlag.CreepyTVBroadcastSeen, true)
-        //    - Bắn độc thoại kinh hoàng của Nam (creepyHiddenCamDialogue: "Góc quay này... là từ bức tranh sau lưng mình?!")
-        //    - return;
-        // 3. Ở Hồi 1: Đảo trạng thái giữa Off và WeatherNewsAct1:
-        //    - Nếu bật WeatherNewsAct1:
-        //      + Đổi Material của screenRenderer thành weatherNewsMat
-        //      + Bật screenGlowLight.enabled = true và khởi chạy glowRoutine = StartCoroutine(DynamicScreenGlowRoutine())
-        //      + Nếu có videoPlayer: videoPlayer.clip = weatherNewsClip; videoPlayer.targetTexture = tvRenderTexture; videoPlayer.Play()
-        //      + Nếu bật lần đầu (!StoryEventBus.Instance.HasFlag(StoryFlag.TVNewsWatched)):
-        //        * StoryEventBus.Instance.SetFlag(StoryFlag.TVNewsWatched, true)
-        //        * StoryEventBus.Instance.RequestDialogue(watchNewsDialogue)
-        //    - Nếu tắt (Off):
-        //      + Gán screenRenderer.material = offScreenMat
-        //      + Tắt screenGlowLight.enabled = false, dừng glowRoutine
-        //      + Nếu có videoPlayer: videoPlayer.Stop()
-
         if (StoryEventBus.Instance.HasFlag(StoryFlag.PowerOutageOccurred) && !StoryEventBus.Instance.HasFlag(StoryFlag.PowerRestored))
             return;
 
@@ -135,22 +107,16 @@ public class TVController : MonoBehaviour
 
     private void HandleStoryFlagChanged(StoryFlag flag)
     {
-        // TODO:
-        // 1. Khi flag == StoryFlag.PowerOutageOccurred (Sập nguồn đầu Hồi 2):
-        //    - Cưỡng bức chuyển currentChannel = TVChannelState.Off
-        //    - Gán offScreenMat, tắt screenGlowLight, dừng videoPlayer và mọi AudioSource
-        // 2. Khi flag == StoryFlag.PowerRestored (Cắm đủ cầu chì bật lại điện):
-        //    - Tự động chuyển currentChannel = TVChannelState.HiddenCameraAct2
-        //    - Bật hiddenWallCamera.enabled = true (chỉ render Camera phụ khi cần để tối ưu GPU!)
-        //    - Gán hiddenCameraMat lên màn hình Tivi, bật screenGlowLight và phát tiếng rè tvStaticAudio
 
         if(flag == StoryFlag.PowerOutageOccurred)
         {
             currentChannel = TVChannelState.Off;
             SetScreenMaterial(offScreenMat);
             screenGlowLight.enabled = false;
-            tvNewsAudio.Stop();
-            tvStaticAudio.Stop();
+            if (glowRoutine != null) StopCoroutine(glowRoutine);
+            if (videoPlayer != null) videoPlayer.Stop();
+            if (tvNewsAudio != null) tvNewsAudio.Stop();
+            if (tvStaticAudio != null) tvStaticAudio.Stop();
         }
         else if (flag == StoryFlag.PowerRestored)
         {

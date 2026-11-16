@@ -68,7 +68,6 @@ public class NoodleBowlController : HoldableItemBase
         placeableID = "NoodleBowl";
 
         heldPositionOffset = new Vector3(0.08f, -0.07f, -0.02f);
-        heldRotationOffset = new Vector3(-8f, 0f, 25f);
     }
 
     public override string InteractionPrompt

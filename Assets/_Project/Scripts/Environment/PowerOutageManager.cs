@@ -61,6 +61,12 @@ public class PowerOutageManager : MonoBehaviour
             glassCupToKnockOver.AddForce(cupKnockForce, ForceMode.Impulse);
         }
 
+        foreach (var renderer in emissiveBulbRenderers)
+        {
+            if (renderer != null)
+                renderer.enabled = false;
+        }
+
         yield return new WaitForSeconds(1.8f);
 
         StoryEventBus.Instance.RequestDialogue(outageReactionDialogue);

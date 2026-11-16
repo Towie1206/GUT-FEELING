@@ -34,7 +34,7 @@ public class PlayerFreeState : PlayerState
 
         if (input.Player.Toggle.WasPressedThisFrame()) 
         {
-            player.hand.UseCurrentItem();
+            player.hand.UseLeftHandItem();
         }
 
         if (input.Player.Throw.WasPressedThisFrame())
@@ -62,7 +62,11 @@ public class PlayerFreeState : PlayerState
         if(input.Player.Phone.WasPerformedThisFrame())
         {
             stateMachine.ChangeState(player.phoneState);
-        }    
+        }
+        if(input.Player.Attack.WasPerformedThisFrame())
+        {
+            player.hand.UseCurrentItem();
+        }
 
         player.hand.UpdateSway(player.mousePosition.x);
     }

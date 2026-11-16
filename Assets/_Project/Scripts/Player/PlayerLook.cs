@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerLook : MonoBehaviour
@@ -11,6 +12,7 @@ public class PlayerLook : MonoBehaviour
 
     [Header("Zoom Settings")]
     [SerializeField] private Camera playerCamera;
+    [SerializeField] private CinemachineCamera playerVirtualCamera;
     [SerializeField] private float defaultFOV = 75f;
     [SerializeField] private float zoomFOV = 45f;
     [SerializeField] private float zoomSpeed = 10f; // Tốc độ co dãn FOV
@@ -18,6 +20,13 @@ public class PlayerLook : MonoBehaviour
     private bool isZooming;
     private float pitch;
 
+    private void Awake()
+    {
+        if (playerVirtualCamera == null && camPivot != null)
+        {
+            playerVirtualCamera = camPivot.GetComponentInChildren<CinemachineCamera>();
+        }
+    }
     public void Look(Vector2 lookInput)
     {
         HandleHorizontalLook(lookInput.x);
@@ -49,12 +58,15 @@ public class PlayerLook : MonoBehaviour
 
     private void HandleZoom()
     {
-        if(playerCamera == null) return;
+        if (playerCamera == null) return;
 
         float targetFOV = isZooming ? zoomFOV : defaultFOV;
-        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
+        if (playerVirtualCamera != null)
+            playerVirtualCamera.Lens.FieldOfView = Mathf.Lerp(playerVirtualCamera.Lens.FieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
+        else
+            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
     }
-    
+
     public Transform CameraTransform => camPivot;
 
     public void ResetCameraTransform()
