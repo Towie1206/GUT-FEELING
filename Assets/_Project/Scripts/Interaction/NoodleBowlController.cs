@@ -141,6 +141,8 @@ public class NoodleBowlController : HoldableItemBase
                 }
                 break;
             case NoodleState.EmptyByStalker:
+                StoryEventBus.Instance.SetFlag(StoryFlag.HalfEatenNoodleSeen, true);
+                StoryEventBus.Instance.RequestDialogue(stalkerAteNoodleDialogue);
                 break;
             case NoodleState.PouredHotWater:
                 base.Interact(player); // bên holdableitembase sẽ gọi player.hand.equip(this)
@@ -215,11 +217,13 @@ public class NoodleBowlController : HoldableItemBase
 
     private void HandleStoryFlagChanged(StoryFlag flag)
     {
-        // TODO (Chuẩn bị cho Hồi 2):
-        // Khi flag == StoryFlag.PowerRestored:
-        // - Chuyển currentState = NoodleState.EmptyByStalker
-        // - Tắt halfEatenMesh, bật emptyStalkerMesh
-        // - Bật cốc nước lạ uống dở bên cạnh (mysteriousHalfDrunkCup.SetActive(true))
+        if(flag == StoryFlag.PowerRestored)
+        {
+            currentState = NoodleState.EmptyByStalker;
+            if (halfEatenMesh != null) halfEatenMesh.SetActive(false);
+            if (emptyStalkerMesh != null) emptyStalkerMesh.SetActive(true);
+            if (mysteriousHalfDrunkCup != null) mysteriousHalfDrunkCup.SetActive(true);
+        }
     }
 
     public override void OnPlace(Transform socketPoint)

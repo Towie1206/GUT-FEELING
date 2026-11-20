@@ -79,5 +79,11 @@ public class PowerOutageManager : MonoBehaviour
         // 2. Phát âm thanh có điện lại (powerRestoreAudio.Play())
         // 3. Bật lại toàn bộ đèn trong mảng apartmentLights
         // 4. Bắn độc thoại: StoryEventBus.Instance.RequestDialogue(powerRestoredDialogue)
+        isPowerOut = false;
+        if (powerRestoreAudio != null) powerRestoreAudio.Play();
+        foreach (var light in apartmentLights) { if (light != null) light.enabled = true; }
+        foreach (var renderer in emissiveBulbRenderers) { if (renderer != null) renderer.enabled = true; }
+
+        StoryEventBus.Instance.RequestDialogue(powerRestoredDialogue);
     }
 }

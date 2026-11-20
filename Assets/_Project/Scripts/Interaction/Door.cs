@@ -1,9 +1,16 @@
 using System.Collections;
 using UnityEngine;
 
+public enum RotationAxis
+{
+    X,
+    Y,
+    Z
+}
 public class Door : MonoBehaviour,IInteractable
 {
     [SerializeField] private Transform doorTransform;
+    [SerializeField] private RotationAxis rotationAxis = RotationAxis.Z;
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float openSpeed = 3f;
     [SerializeField] private AudioSource doorAudio;
@@ -17,10 +24,22 @@ public class Door : MonoBehaviour,IInteractable
     private void Start()
     {
         closedRotation = doorTransform.localRotation;
-        openRotation = closedRotation * Quaternion.Euler(0, 0, openAngle); // giống + trong vector3
+        switch(rotationAxis)
+        {
+            case RotationAxis.X:
+                openRotation = closedRotation * Quaternion.Euler(openAngle, 0, 0);
+                break;
+            case RotationAxis.Y:
+                openRotation = closedRotation * Quaternion.Euler(0, openAngle, 0);
+                break;
+            case RotationAxis.Z:
+                openRotation = closedRotation * Quaternion.Euler(0, 0, openAngle);
+                break;
+        }
+        // openRotation = closedRotation * Quaternion.Euler(0, 0, openAngle);  giống + trong vector3
     }
 
-    public string InteractionPrompt => isOpen? "Close Door" : "Open Door";
+    public string InteractionPrompt => isOpen? "[E] Close Door" : "[E] Open Door";
 
     public void Interact(Player player)
     {

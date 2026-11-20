@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class ItemSocket : MonoBehaviour, IInteractable
 {
@@ -7,8 +7,8 @@ public class ItemSocket : MonoBehaviour, IInteractable
     [SerializeField] private string requiredItemTag = "";
     [SerializeField] private AudioSource placeAudio;
 
-    public UnityEvent OnItemPlaced;
-    public UnityEvent OnItemRemoved;
+    public event Action OnItemPlaced;
+    public event Action OnItemRemoved;
 
     private IHoldable currentItem;
     public bool HasItem => currentItem != null;
